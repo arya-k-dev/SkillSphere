@@ -1,0 +1,216 @@
+{% extends "base.html" %}
+
+{% block title %}Add skill preferences | SkillSphere{% endblock %}
+{% block body_class %}auth-page onboarding-page{% endblock %}
+
+{% block content %}
+<section class="onboarding-section">
+    <div class="container onboarding-shell wide">
+        <div class="onboarding-card">
+            <div class="onboarding-progress" aria-label="Onboarding progress">
+                <span>Step 2 of 2</span>
+                <div><i class="complete"></i></div>
+            </div>
+
+            <div class="onboarding-heading">
+                <p class="auth-kicker">Skill Setup</p>
+                <h1>Add your skill exchange preferences</h1>
+                <p>Add what you can teach and what you want to learn to find perfect matches.</p>
+            </div>
+
+            <div class="onboarding-empty-note">Add at least one skill you can teach and one skill you want to learn.</div>
+            <p class="onboarding-helper-text">You can always add or edit skills later from My Skills.</p>
+
+            <form method="post" class="onboarding-skill-form" id="onboarding-skill-form">
+                {% csrf_token %}
+                <div class="onboarding-skill-grid">
+                    <section class="skill-setup-panel" data-formset="teach">
+                        <div class="skill-setup-heading">
+                            <span>Teach</span>
+                            <h2>Skills I Can Teach</h2>
+                        </div>
+                        {{ teach_formset.management_form }}
+                        {% if teach_formset.non_form_errors %}
+                            <div class="form-errors">{{ teach_formset.non_form_errors }}</div>
+                        {% endif %}
+                        <div class="skill-form-list">
+                            {% for form in teach_formset %}
+                                <div class="skill-entry-row" data-default-row="{% if forloop.first %}true{% else %}false{% endif %}">
+                                    <div class="form-group">
+                                        <label for="{{ form.title.id_for_label }}">Skill name</label>
+                                        {{ form.title }}
+                                        {% for error in form.title.errors %}<p class="field-error">{{ error }}</p>{% endfor %}
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="{{ form.category.id_for_label }}">Category</label>
+                                        {{ form.category }}
+                                        {% for error in form.category.errors %}<p class="field-error">{{ error }}</p>{% endfor %}
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="{{ form.level.id_for_label }}">Experience level</label>
+                                        {{ form.level }}
+                                        {% for error in form.level.errors %}<p class="field-error">{{ error }}</p>{% endfor %}
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="{{ form.mode.id_for_label }}">Teaching mode</label>
+                                        {{ form.mode }}
+                                        {% for error in form.mode.errors %}<p class="field-error">{{ error }}</p>{% endfor %}
+                                    </div>
+                                    <div class="form-group full">
+                                        <label for="{{ form.description.id_for_label }}">Description</label>
+                                        {{ form.description }}
+                                        {% for error in form.description.errors %}<p class="field-error">{{ error }}</p>{% endfor %}
+                                    </div>
+                                    <div class="delete-field">{{ form.DELETE }}</div>
+                                    {% if not forloop.first %}
+                                        <button class="remove-skill-row" type="button">Remove</button>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                        </div>
+                        <button class="add-skill-row" type="button">+ Add Another Skill</button>
+                        <template class="empty-form-template">
+                            <div class="skill-entry-row" data-default-row="false">
+                                <div class="form-group">
+                                    <label for="{{ teach_formset.empty_form.title.id_for_label }}">Skill name</label>
+                                    {{ teach_formset.empty_form.title }}
+                                </div>
+                                <div class="form-group">
+                                    <label for="{{ teach_formset.empty_form.category.id_for_label }}">Category</label>
+                                    {{ teach_formset.empty_form.category }}
+                                </div>
+                                <div class="form-group">
+                                    <label for="{{ teach_formset.empty_form.level.id_for_label }}">Experience level</label>
+                                    {{ teach_formset.empty_form.level }}
+                                </div>
+                                <div class="form-group">
+                                    <label for="{{ teach_formset.empty_form.mode.id_for_label }}">Teaching mode</label>
+                                    {{ teach_formset.empty_form.mode }}
+                                </div>
+                                <div class="form-group full">
+                                    <label for="{{ teach_formset.empty_form.description.id_for_label }}">Description</label>
+                                    {{ teach_formset.empty_form.description }}
+                                </div>
+                                <div class="delete-field">{{ teach_formset.empty_form.DELETE }}</div>
+                                <button class="remove-skill-row" type="button">Remove</button>
+                            </div>
+                        </template>
+                    </section>
+
+                    <section class="skill-setup-panel" data-formset="learn">
+                        <div class="skill-setup-heading">
+                            <span>Learn</span>
+                            <h2>Skills I Want to Learn</h2>
+                        </div>
+                        {{ learn_formset.management_form }}
+                        {% if learn_formset.non_form_errors %}
+                            <div class="form-errors">{{ learn_formset.non_form_errors }}</div>
+                        {% endif %}
+                        <div class="skill-form-list">
+                            {% for form in learn_formset %}
+                                <div class="skill-entry-row" data-default-row="{% if forloop.first %}true{% else %}false{% endif %}">
+                                    <div class="form-group">
+                                        <label for="{{ form.title.id_for_label }}">Skill name</label>
+                                        {{ form.title }}
+                                        {% for error in form.title.errors %}<p class="field-error">{{ error }}</p>{% endfor %}
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="{{ form.category.id_for_label }}">Category</label>
+                                        {{ form.category }}
+                                        {% for error in form.category.errors %}<p class="field-error">{{ error }}</p>{% endfor %}
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="{{ form.level.id_for_label }}">Current level</label>
+                                        {{ form.level }}
+                                        {% for error in form.level.errors %}<p class="field-error">{{ error }}</p>{% endfor %}
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="{{ form.mode.id_for_label }}">Preferred mode</label>
+                                        {{ form.mode }}
+                                        {% for error in form.mode.errors %}<p class="field-error">{{ error }}</p>{% endfor %}
+                                    </div>
+                                    <div class="form-group full">
+                                        <label for="{{ form.description.id_for_label }}">Description / learning goal</label>
+                                        {{ form.description }}
+                                        {% for error in form.description.errors %}<p class="field-error">{{ error }}</p>{% endfor %}
+                                    </div>
+                                    <div class="delete-field">{{ form.DELETE }}</div>
+                                    {% if not forloop.first %}
+                                        <button class="remove-skill-row" type="button">Remove</button>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                        </div>
+                        <button class="add-skill-row" type="button">+ Add Another Skill</button>
+                        <template class="empty-form-template">
+                            <div class="skill-entry-row" data-default-row="false">
+                                <div class="form-group">
+                                    <label for="{{ learn_formset.empty_form.title.id_for_label }}">Skill name</label>
+                                    {{ learn_formset.empty_form.title }}
+                                </div>
+                                <div class="form-group">
+                                    <label for="{{ learn_formset.empty_form.category.id_for_label }}">Category</label>
+                                    {{ learn_formset.empty_form.category }}
+                                </div>
+                                <div class="form-group">
+                                    <label for="{{ learn_formset.empty_form.level.id_for_label }}">Current level</label>
+                                    {{ learn_formset.empty_form.level }}
+                                </div>
+                                <div class="form-group">
+                                    <label for="{{ learn_formset.empty_form.mode.id_for_label }}">Preferred mode</label>
+                                    {{ learn_formset.empty_form.mode }}
+                                </div>
+                                <div class="form-group full">
+                                    <label for="{{ learn_formset.empty_form.description.id_for_label }}">Description / learning goal</label>
+                                    {{ learn_formset.empty_form.description }}
+                                </div>
+                                <div class="delete-field">{{ learn_formset.empty_form.DELETE }}</div>
+                                <button class="remove-skill-row" type="button">Remove</button>
+                            </div>
+                        </template>
+                    </section>
+                </div>
+
+                <div class="onboarding-actions split">
+                    <a class="btn btn-outline" href="{% url 'accounts:onboarding_profile' %}">Back</a>
+                    <button class="btn btn-primary" type="submit">Finish Setup</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+
+<script>
+    document.querySelectorAll("[data-formset]").forEach((panel) => {
+        const prefix = panel.dataset.formset;
+        const totalForms = panel.querySelector(`#id_${prefix}-TOTAL_FORMS`);
+        const list = panel.querySelector(".skill-form-list");
+        const template = panel.querySelector(".empty-form-template");
+        const addButton = panel.querySelector(".add-skill-row");
+
+        const bindRemove = (row) => {
+            if (row.dataset.defaultRow === "true") return;
+            const button = row.querySelector(".remove-skill-row");
+            const deleteInput = row.querySelector("input[type='checkbox'][name$='-DELETE']");
+            if (!button || !deleteInput) return;
+            button.addEventListener("click", () => {
+                deleteInput.checked = true;
+                row.classList.add("is-removed");
+            });
+        };
+
+        list.querySelectorAll(".skill-entry-row").forEach(bindRemove);
+
+        addButton.addEventListener("click", () => {
+            const index = Number(totalForms.value);
+            const html = template.innerHTML.replaceAll("__prefix__", String(index));
+            const wrapper = document.createElement("div");
+            wrapper.innerHTML = html.trim();
+            const row = wrapper.firstElementChild;
+            list.appendChild(row);
+            totalForms.value = String(index + 1);
+            bindRemove(row);
+        });
+    });
+</script>
+{% endblock %}

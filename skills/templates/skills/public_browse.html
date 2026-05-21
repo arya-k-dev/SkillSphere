@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}Browse Skills | SkillSphere{% endblock %}
+{% block body_class %}landing-page{% endblock %}
+
+{% block content %}
+<section class="landing-section public-explore-hero">
+    <div class="container">
+        <div class="landing-section-heading centered">
+            <p class="landing-kicker">Community Skills</p>
+            <h1>Browse Skills</h1>
+            <p class="public-skill-subtitle">Discover skills shared by the community and find partners who can help you learn.</p>
+        </div>
+        <div class="public-skill-grid">
+            {% for skill in public_skills %}
+                <a class="public-skill-card app-card gradient-border-card" href="{% url 'skills:public_detail' skill.slug %}">
+                    <span class="icon-badge category-icon-badge">{{ skill.category|first|upper }}</span>
+                    <span class="skill-chip">{{ skill.category }}</span>
+                    <h3>{{ skill.name }}</h3>
+                    <p>{{ skill.description }}</p>
+                    <strong class="public-skill-button">Explore Skill</strong>
+                </a>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}

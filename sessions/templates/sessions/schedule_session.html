@@ -1,0 +1,51 @@
+{% extends "dashboard_base.html" %}
+
+{% block title %}{% if is_edit %}Edit Session{% else %}Schedule Session{% endif %} | SkillSphere{% endblock %}
+{% block dashboard_section %}Sessions{% endblock %}
+{% block dashboard_heading %}{% if is_edit %}Edit Session{% else %}Schedule Session{% endif %}{% endblock %}
+{% block dashboard_subtitle %}
+<p class="topbar-subtitle">
+    {% if is_edit %}
+        Update your learning session details while keeping your exchange partner informed.
+    {% else %}
+        Plan a focused learning session with your exchange partner.
+    {% endif %}
+</p>
+{% endblock %}
+
+{% block dashboard_content %}
+<section class="section session-system-page">
+    <div class="session-form-shell">
+        <article class="session-form-card">
+            {% if exchange %}
+                <div class="session-exchange-summary">
+                    <p class="section-label">Accepted exchange</p>
+                    <h2>{{ exchange.requester.profile.full_name|default:exchange.requester.username }} and {{ exchange.responder.profile.full_name|default:exchange.responder.username }}</h2>
+                    <p>{{ exchange.offered_skill.title|default:"Skill exchange" }} for {{ exchange.requested_skill.title|default:"partner skill" }}</p>
+                </div>
+            {% endif %}
+            <form method="post" class="session-form">
+                {% csrf_token %}
+                {% if form.non_field_errors %}
+                    <div class="form-errors">{{ form.non_field_errors }}</div>
+                {% endif %}
+                <div class="session-form-grid">
+                    {% for field in form %}
+                        <div class="form-group {% if field.name == 'description' %}wide{% endif %}">
+                            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                            {{ field }}
+                            {% for error in field.errors %}
+                                <p class="field-error">{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endfor %}
+                </div>
+                <div class="button-row session-actions-row">
+                    <button class="btn btn-primary" type="submit">{% if is_edit %}Save Changes{% else %}Schedule Session{% endif %}</button>
+                    <a class="btn btn-outline" href="{% if session %}{% url 'sessions:detail' session.pk %}{% else %}{% url 'sessions:list' %}{% endif %}">Cancel</a>
+                </div>
+            </form>
+        </article>
+    </div>
+</section>
+{% endblock %}

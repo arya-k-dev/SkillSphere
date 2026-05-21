@@ -1,0 +1,153 @@
+{% extends "dashboard_base.html" %}
+
+{% block title %}Match Requests | SkillSphere{% endblock %}
+{% block dashboard_section %}Requests{% endblock %}
+{% block dashboard_heading %}Match Requests{% endblock %}
+{% block dashboard_subtitle %}<p class="topbar-subtitle">Review invitations you have received and keep track of requests you have sent.</p>{% endblock %}
+
+{% block dashboard_content %}
+<section class="section requests-page">
+    <div class="container requests-layout requests-redesign-layout">
+        {% if notifications %}
+            <article class="panel notifications-panel">
+                <p class="section-label">Notifications</p>
+                <h2>Recent updates</h2>
+                <div class="notification-list">
+                    {% for notification in notifications %}
+                        <a class="notification-card {% if not notification.is_read %}unread{% endif %}" href="{% url 'notification_read' notification.pk %}">
+                            <strong>{{ notification.title }}</strong>
+                            <p>{{ notification.message }}</p>
+                            <span>{{ notification.created_at|date:"M d, h:i A" }}</span>
+                        </a>
+                    {% endfor %}
+                </div>
+            </article>
+        {% endif %}
+        <article class="panel requests-section-card">
+            <div class="requests-section-header">
+                <div>
+                    <p class="section-label">Received</p>
+                    <h2>Received Requests</h2>
+                </div>
+                <span class="request-count-badge">{{ received_requests|length }}</span>
+            </div>
+            {% if received_requests %}
+                <div class="request-list">
+                    {% for match_request in received_requests %}
+                        <div class="request-item request-card">
+                            <div class="request-card-main">
+                                <div class="request-card-topline">
+                                    <div class="request-user-block">
+                                        <div class="request-avatar">{{ match_request.sender.profile.full_name|default:match_request.sender.username|first|upper }}</div>
+                                        <div>
+                                            <h3>{{ match_request.sender.profile.full_name|default:match_request.sender.username }}</h3>
+                                            <p>Match score: {{ match_request.score }}%</p>
+                                        </div>
+                                    </div>
+                                    <span class="request-status-badge status-{{ match_request.status }}">{{ match_request.get_status_display }}</span>
+                                </div>
+                                <div class="request-skill-pair">
+                                    <div>
+                                        <span>They can teach</span>
+                                        <strong>{{ match_request.offered_skill.title|default:"Skill not selected" }}</strong>
+                                    </div>
+                                    <div>
+                                        <span>They want to learn</span>
+                                        <strong>{{ match_request.requested_skill.title|default:"Skill not selected" }}</strong>
+                                    </div>
+                                </div>
+                                {% if match_request.message %}
+                                    <p class="request-note">{{ match_request.message }}</p>
+                                {% endif %}
+                            </div>
+                            <div class="request-card-footer">
+                                <time>{{ match_request.created_at|date:"M d, Y" }}</time>
+                                {% if match_request.status == "pending" %}
+                                    <div class="button-row compact-buttons">
+                                        <form action="{% url 'matching:accept_request' match_request.pk %}" method="post">
+                                            {% csrf_token %}
+                                            <button class="btn request-action request-action-primary" type="submit">Accept</button>
+                                        </form>
+                                        <form action="{% url 'matching:decline_request' match_request.pk %}" method="post">
+                                            {% csrf_token %}
+                                            <button class="btn request-action request-action-danger" type="submit">Reject</button>
+                                        </form>
+                                    </div>
+                                {% elif match_request.status == "accepted" and match_request.exchange %}
+                                    <div class="button-row compact-buttons">
+                                        <a class="btn request-action request-action-primary" href="{% url 'messaging:exchange_chat' match_request.exchange.pk %}">Open Chat</a>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="requests-empty-state">
+                    <strong>No received requests yet</strong>
+                    <p>New exchange requests will appear here.</p>
+                </div>
+            {% endif %}
+        </article>
+
+        <article class="panel requests-section-card">
+            <div class="requests-section-header">
+                <div>
+                    <p class="section-label">Sent</p>
+                    <h2>Sent Requests</h2>
+                </div>
+                <span class="request-count-badge">{{ sent_requests|length }}</span>
+            </div>
+            {% if sent_requests %}
+                <div class="request-list">
+                    {% for match_request in sent_requests %}
+                        <div class="request-item request-card">
+                            <div class="request-card-main">
+                                <div class="request-card-topline">
+                                    <div class="request-user-block">
+                                        <div class="request-avatar">{{ match_request.receiver.profile.full_name|default:match_request.receiver.username|first|upper }}</div>
+                                        <div>
+                                            <h3>{{ match_request.receiver.profile.full_name|default:match_request.receiver.username }}</h3>
+                                            <p>Match score: {{ match_request.score }}%</p>
+                                        </div>
+                                    </div>
+                                    <span class="request-status-badge status-{{ match_request.status }}">{{ match_request.get_status_display }}</span>
+                                </div>
+                                <div class="request-skill-pair">
+                                    <div>
+                                        <span>You offered</span>
+                                        <strong>{{ match_request.offered_skill.title|default:"Skill not selected" }}</strong>
+                                    </div>
+                                    <div>
+                                        <span>You requested</span>
+                                        <strong>{{ match_request.requested_skill.title|default:"Skill not selected" }}</strong>
+                                    </div>
+                                </div>
+                                {% if match_request.message %}
+                                    <p class="request-note">{{ match_request.message }}</p>
+                                {% endif %}
+                            </div>
+                            <div class="request-card-footer">
+                                <time>{{ match_request.created_at|date:"M d, Y" }}</time>
+                                {% if match_request.status == "pending" %}
+                                    <form action="{% url 'matching:cancel_request' match_request.pk %}" method="post">
+                                        {% csrf_token %}
+                                        <button class="btn request-action request-action-secondary" type="submit">Cancel</button>
+                                    </form>
+                                {% elif match_request.status == "accepted" and match_request.exchange %}
+                                    <a class="btn request-action request-action-primary" href="{% url 'messaging:exchange_chat' match_request.exchange.pk %}">Open Chat</a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="requests-empty-state">
+                    <strong>No sent requests yet</strong>
+                    <p>Requests you send will appear here.</p>
+                </div>
+            {% endif %}
+        </article>
+    </div>
+</section>
+{% endblock %}

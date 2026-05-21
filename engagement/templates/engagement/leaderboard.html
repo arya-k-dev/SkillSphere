@@ -1,0 +1,45 @@
+{% extends "dashboard_base.html" %}
+
+{% block title %}Leaderboard | SkillSphere{% endblock %}
+{% block dashboard_heading %}Leaderboard{% endblock %}
+{% block dashboard_subtitle %}<p class="topbar-subtitle">See top SkillSphere contributors ranked by sessions, ratings, badges, and points.</p>{% endblock %}
+
+{% block dashboard_content %}
+<section class="engagement-page">
+    <div class="engagement-page-head">
+        <div>
+            <p class="section-label">Rankings</p>
+            <h2>Community leaderboard</h2>
+        </div>
+    </div>
+    <nav class="leaderboard-tabs">
+        <a class="{% if active_filter == 'overall' %}active{% endif %}" href="{% url 'engagement:leaderboard' %}?filter=overall">Overall</a>
+        <a class="{% if active_filter == 'mentors' %}active{% endif %}" href="{% url 'engagement:leaderboard' %}?filter=mentors">Mentors</a>
+        <a class="{% if active_filter == 'learners' %}active{% endif %}" href="{% url 'engagement:leaderboard' %}?filter=learners">Learners</a>
+        <a class="{% if active_filter == 'month' %}active{% endif %}" href="{% url 'engagement:leaderboard' %}?filter=month">This Month</a>
+    </nav>
+
+    <div class="engagement-card leaderboard-table-card">
+        <div class="leaderboard-row leaderboard-head">
+            <span>Rank</span><span>User</span><span>Skills Taught</span><span>Sessions</span><span>Hours</span><span>Rating</span><span>Badges</span><span>Points</span>
+        </div>
+        {% for row in rows %}
+            <a class="leaderboard-row" href="{% url 'matching:detail' row.user.pk %}">
+                <span>#{{ row.rank }}</span>
+                <strong>{{ row.user.profile.full_name|default:row.user.username }}</strong>
+                <span>{{ row.skills_taught }}</span>
+                <span>{{ row.completed_sessions }}</span>
+                <span>{{ row.hours_taught|floatformat:1 }}</span>
+                <span>{{ row.average_rating|floatformat:1 }}</span>
+                <span>{{ row.badges_count }}</span>
+                <b>{{ row.points }}</b>
+            </a>
+        {% empty %}
+            <div class="engagement-empty">
+                <strong>No leaderboard data yet</strong>
+                <p>Completed sessions and ratings will build the leaderboard.</p>
+            </div>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}

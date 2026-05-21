@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}Complete your profile | SkillSphere{% endblock %}
+{% block body_class %}auth-page onboarding-page{% endblock %}
+
+{% block content %}
+<section class="onboarding-section">
+    <div class="container onboarding-shell">
+        <div class="onboarding-card">
+            <div class="onboarding-progress" aria-label="Onboarding progress">
+                <span>Step 1 of 2</span>
+                <div><i></i></div>
+            </div>
+
+            <div class="onboarding-heading">
+                <p class="auth-kicker">Profile Basics</p>
+                <h1>Complete your SkillSphere profile</h1>
+                <p>Tell us about yourself so we can recommend better skill partners.</p>
+            </div>
+
+            <form method="post" enctype="multipart/form-data" class="onboarding-form">
+                {% csrf_token %}
+                {% for field in form %}
+                    <div class="form-group {% if field.name == 'bio' or field.name == 'learning_goal' %}full{% endif %}">
+                        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                        {{ field }}
+                        {% for error in field.errors %}
+                            <p class="field-error">{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endfor %}
+                <div class="onboarding-actions">
+                    <button class="btn btn-primary" type="submit">Continue to Skills</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock %}

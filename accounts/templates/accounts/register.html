@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Create Account | SkillSphere{% endblock %}
+{% block body_class %}auth-page{% endblock %}
+
+{% block content %}
+<section class="auth-modern-section">
+    <div class="container auth-modern-grid signup-grid">
+        <div class="auth-card-modern glass-card gradient-border-card">
+            <div class="logo-wordmark auth-brand-logo" aria-label="SkillSphere">
+                <img class="brand-mark" src="{% static 'images/skillsphere-exchange-logo-v2.svg' %}" alt="" aria-hidden="true">
+                <span class="logo-text"><span class="logo-skill">Skill</span><span class="logo-sphere">Sphere</span></span>
+            </div>
+            <p class="auth-kicker">Join SkillSphere</p>
+            <h1>Create your SkillSphere account</h1>
+            <p class="auth-subtitle">Start exchanging skills, finding learning partners, and growing with the community.</p>
+
+            <form method="post" class="form-grid auth-form-modern">
+                {% csrf_token %}
+                {% if form.non_field_errors %}
+                    <div class="form-errors">{{ form.non_field_errors }}</div>
+                {% endif %}
+                <div class="form-group">
+                    <label for="{{ form.first_name.id_for_label }}">{{ form.first_name.label }}</label>
+                    {{ form.first_name }}
+                    {% for error in form.first_name.errors %}
+                        <p class="field-error">{{ error }}</p>
+                    {% endfor %}
+                </div>
+                <div class="form-group">
+                    <label for="{{ form.last_name.id_for_label }}">{{ form.last_name.label }}</label>
+                    {{ form.last_name }}
+                    {% for error in form.last_name.errors %}
+                        <p class="field-error">{{ error }}</p>
+                    {% endfor %}
+                </div>
+                <div class="form-group full">
+                    <label for="{{ form.username.id_for_label }}">{{ form.username.label }}</label>
+                    {{ form.username }}
+                    {% for error in form.username.errors %}
+                        <p class="field-error">{{ error }}</p>
+                    {% endfor %}
+                </div>
+                <div class="form-group full">
+                    <label for="{{ form.email.id_for_label }}">{{ form.email.label }}</label>
+                    {{ form.email }}
+                    {% for error in form.email.errors %}
+                        <p class="field-error">{{ error }}</p>
+                    {% endfor %}
+                </div>
+                <div class="form-group">
+                    <label for="{{ form.password1.id_for_label }}">{{ form.password1.label }}</label>
+                    {{ form.password1 }}
+                    {% for error in form.password1.errors %}
+                        <p class="field-error">{{ error }}</p>
+                    {% endfor %}
+                </div>
+                <div class="form-group">
+                    <label for="{{ form.password2.id_for_label }}">Confirm password</label>
+                    {{ form.password2 }}
+                    {% for error in form.password2.errors %}
+                        <p class="field-error">{{ error }}</p>
+                    {% endfor %}
+                </div>
+                <button class="btn btn-primary full-width form-submit" type="submit">Create Account</button>
+            </form>
+            <p class="auth-switch">Already have an account? <a href="{% url 'accounts:login' %}">Login</a></p>
+        </div>
+
+        <aside class="auth-info-panel app-card gradient-border-card">
+            <img src="{% static 'images/skillsphere-signup-peer-learning.png' %}" alt="SkillSphere peer learning">
+            <div class="auth-info-content">
+                <p class="auth-kicker">Skill Exchange Based</p>
+                <h2>Find people who can teach what you want to learn.</h2>
+                <ul class="auth-benefit-list">
+                    <li>Smart skill matching</li>
+                    <li>Free peer-to-peer learning</li>
+                    <li>Trusted community profiles</li>
+                    <li>Track your skill growth</li>
+                </ul>
+                <div class="auth-trust-badges">
+                    <span>Free to Join</span>
+                    <span>No Course Fees</span>
+                    <span>Skill Exchange Based</span>
+                </div>
+            </div>
+        </aside>
+    </div>
+</section>
+{% endblock %}

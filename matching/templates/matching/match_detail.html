@@ -1,0 +1,123 @@
+{% extends "dashboard_base.html" %}
+
+{% block title %}Match Detail | SkillSphere{% endblock %}
+{% block dashboard_section %}Matches{% endblock %}
+{% block dashboard_heading %}{{ match.user.profile.full_name|default:match.user.username }}{% endblock %}
+{% block dashboard_subtitle %}<p class="topbar-subtitle">{{ match.user.profile.headline|default:"A SkillSphere member ready to exchange skills." }}</p>{% endblock %}
+
+{% block dashboard_content %}
+<section class="section">
+    <div class="container match-detail-layout">
+        <article class="profile-details">
+            <div class="match-score-row">
+                <div class="score-circle large-score">
+                    <strong>{{ match.score }}%</strong>
+                    <span>Match</span>
+                </div>
+                <div>
+                    <p class="section-label">Profile Summary</p>
+                    <h2>{{ match.user.profile.get_role_display|default:"SkillSphere Member" }}</h2>
+                    <p>{{ match.user.profile.bio|default:"No bio has been added yet." }}</p>
+                </div>
+            </div>
+
+            <div class="detail-grid">
+                <div>
+                    <span>Location</span>
+                    <p>{{ match.user.profile.location|default:"Not added" }}</p>
+                </div>
+                <div>
+                    <span>Username</span>
+                    <p>{{ match.user.username }}</p>
+                </div>
+                <div>
+                    <span>Rating</span>
+                    {% if match.average_rating %}
+                        <p class="match-rating-summary"><span>&#9733;</span>{{ match.average_rating|floatformat:1 }}/5 ({{ match.rating_count }})</p>
+                    {% else %}
+                        <p>Not rated yet</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div>
+                <p class="section-label">Skills They Teach</p>
+                {% if match.teach_skills %}
+                    <div class="match-skill-list">
+                        {% for skill in match.teach_skills %}
+                            <div class="recent-skill-item">
+                                <span>{{ skill.category }} - {{ skill.get_level_display }}</span>
+                                <strong>{{ skill.title }}</strong>
+                                <p>{{ skill.description|truncatewords:24 }}</p>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p>No teaching skills added yet.</p>
+                {% endif %}
+            </div>
+
+            <div>
+                <p class="section-label">Skills They Want to Learn</p>
+                {% if match.learn_skills %}
+                    <div class="match-skill-list">
+                        {% for skill in match.learn_skills %}
+                            <div class="recent-skill-item">
+                                <span>{{ skill.category }} - {{ skill.get_level_display }}</span>
+                                <strong>{{ skill.title }}</strong>
+                                <p>{{ skill.description|truncatewords:24 }}</p>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p>No learning skills added yet.</p>
+                {% endif %}
+            </div>
+
+            <div>
+                <p class="section-label">Why This Match</p>
+                {% if match.reasons %}
+                    <div class="reason-list">
+                        {% for reason in match.reasons %}
+                            <p>{{ reason }}</p>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p>This is a basic match based on nearby skill categories, levels, or profile signals.</p>
+                {% endif %}
+            </div>
+        </article>
+
+        <aside class="profile-card">
+            <div class="avatar">{{ match.user.profile.full_name|default:match.user.username|first|upper }}</div>
+            <h2>Send Request</h2>
+            <p>Add an optional note before starting the exchange.</p>
+            {% if active_request and active_request.status == "accepted" %}
+                <p class="request-status">This exchange is already active.</p>
+                <a class="btn btn-primary full-width" href="{% url 'matching:exchanges' %}">Exchange Active</a>
+            {% elif active_request %}
+                <p class="request-status">A request already exists for this match.</p>
+                <a class="btn btn-outline full-width" href="{% url 'matching:requests' %}">Request Sent</a>
+            {% elif existing_request %}
+                <p class="request-status">A pending request already exists for this match.</p>
+                <a class="btn btn-outline full-width" href="{% url 'matching:requests' %}">View Requests</a>
+            {% else %}
+                <form class="skill-form" action="{% url 'matching:send_request' match.user.pk %}" method="post">
+                    {% csrf_token %}
+                    {% if form.non_field_errors %}
+                        <div class="form-errors">{{ form.non_field_errors }}</div>
+                    {% endif %}
+                    <div class="form-group">
+                        {{ form.message.label_tag }}
+                        {{ form.message }}
+                        {% if form.message.errors %}
+                            <div class="field-error">{{ form.message.errors }}</div>
+                        {% endif %}
+                    </div>
+                    <button class="btn btn-primary full-width" type="submit">Send Match Request</button>
+                </form>
+            {% endif %}
+        </aside>
+    </div>
+</section>
+{% endblock %}

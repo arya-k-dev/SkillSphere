@@ -1,0 +1,59 @@
+{% extends "dashboard_base.html" %}
+
+{% block title %}My Skills | SkillSphere{% endblock %}
+{% block dashboard_section %}My Skills{% endblock %}
+{% block dashboard_heading %}Manage your skill profile{% endblock %}
+{% block dashboard_subtitle %}<p class="topbar-subtitle">Keep your SkillSphere profile aligned with your current learning goals.</p>{% endblock %}
+{% block dashboard_actions %}
+<div class="topbar-page-actions">
+    <a class="btn btn-primary" href="{% url 'skills:add' %}">Add a Skill</a>
+    <a class="btn btn-outline" href="{% url 'matching:recommended' %}">Find Partners</a>
+</div>
+{% endblock %}
+
+{% block dashboard_content %}
+<section class="section">
+    <div class="container">
+        {% if skills %}
+            <div class="skills-grid">
+                {% for skill in skills %}
+                    {% include "skills/skill_card.html" %}
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="empty-state">
+                <h2>You have not added any skills yet.</h2>
+                <p>Start by adding what you can teach or want to learn.</p>
+                <a class="btn btn-primary" href="{% url 'skills:add' %}">Add Your First Skill</a>
+            </div>
+        {% endif %}
+    </div>
+</section>
+
+<section class="section match-preview-section">
+    <div class="container">
+        <div class="section-heading">
+            <p class="section-label">Top Matches For You</p>
+            <h2>Suggested skill exchanges from your latest profile.</h2>
+            <p class="section-copy">These recommendations use what you want to learn, what you can teach, and matching goals from other SkillSphere members.</p>
+        </div>
+
+        {% if top_matches %}
+            <div class="match-grid preview-match-grid">
+                {% for match in top_matches %}
+                    {% include "matching/match_card.html" with compact=True %}
+                {% endfor %}
+            </div>
+            <div class="button-row centered-actions">
+                <a class="btn btn-primary" href="{% url 'matching:recommended' %}">View All Matches</a>
+            </div>
+        {% else %}
+            <div class="empty-state">
+                <h2>No top matches yet.</h2>
+                <p>Add both teaching skills and learning goals to unlock stronger recommendations.</p>
+                <a class="btn btn-primary" href="{% url 'matching:recommended' %}">View All Matches</a>
+            </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

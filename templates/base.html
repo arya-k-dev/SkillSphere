@@ -1,0 +1,107 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}SkillSphere{% endblock %}</title>
+    <link rel="icon" type="image/svg+xml" href="{% static 'images/skillsphere-favicon-v2.svg' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=skillsphere-reveal-safe-20260521">
+</head>
+<body class="{% block body_class %}{% endblock %}">
+    <header class="site-header">
+        <nav class="navbar container">
+            <a href="{% if user.is_authenticated %}{% url 'core:dashboard' %}{% else %}{% url 'core:home' %}{% endif %}" class="logo-wordmark site-brand-logo" aria-label="SkillSphere">
+                <img class="brand-mark" src="{% static 'images/skillsphere-exchange-logo-v2.svg' %}" alt="" aria-hidden="true">
+                <span class="logo-text"><span class="logo-skill">Skill</span><span class="logo-sphere">Sphere</span></span>
+            </a>
+            <button class="nav-toggle" type="button" aria-label="Toggle navigation" aria-expanded="false">Menu</button>
+            <div class="nav-links">
+                <a href="{% url 'core:home' %}">Home</a>
+                {% if user.is_authenticated %}
+                    <a href="{% url 'core:dashboard' %}">Dashboard</a>
+                    <a href="{% url 'skills:browse' %}">Explore</a>
+                    <a href="{% url 'skills:my_skills' %}">My Skills</a>
+                    <a href="{% url 'matching:recommended' %}">Matches</a>
+                    <a href="{% url 'matching:requests' %}">Requests</a>
+                    <a href="{% url 'accounts:profile' %}">Profile</a>
+                    <form class="logout-form" action="{% url 'accounts:logout' %}" method="post">
+                        {% csrf_token %}
+                        <button type="submit">Logout</button>
+                    </form>
+                {% else %}
+                    <a href="{% url 'accounts:login' %}">Login</a>
+                    <a class="nav-cta" href="{% url 'accounts:register' %}">Get Started</a>
+                {% endif %}
+            </div>
+        </nav>
+    </header>
+
+    {% if messages %}
+        <div class="messages container">
+            {% for message in messages %}
+                <div class="message {{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="site-footer">
+        <div class="container footer-grid">
+            <div class="footer-about">
+                <a href="{% url 'core:home' %}" class="logo-wordmark footer-brand-logo" aria-label="SkillSphere">
+                    <img class="brand-mark" src="{% static 'images/skillsphere-exchange-logo-v2.svg' %}" alt="" aria-hidden="true">
+                    <span class="logo-text"><span class="logo-skill">Skill</span><span class="logo-sphere">Sphere</span></span>
+                </a>
+                <p>A peer-to-peer community for finding skill partners, exchanging knowledge, and growing together.</p>
+            </div>
+            <div class="footer-links">
+                <h3>Quick Links</h3>
+                <a href="{% url 'core:home' %}">Home</a>
+                <a href="{% url 'core:home' %}#how-it-works">How It Works</a>
+                <a href="{% url 'core:home' %}#categories">Skill Categories</a>
+                <a href="{% url 'core:home' %}#faq">FAQ</a>
+            </div>
+            <div class="footer-links">
+                <h3>Platform</h3>
+                <a href="{% url 'skills:browse' %}">Explore Skills</a>
+                {% if user.is_authenticated %}
+                    <a href="{% url 'core:dashboard' %}">Dashboard</a>
+                    <a href="{% url 'matching:recommended' %}">Matches</a>
+                    <a href="{% url 'matching:requests' %}">Requests</a>
+                {% else %}
+                    <a href="{% url 'accounts:login' %}">Login</a>
+                    <a href="{% url 'accounts:register' %}">Create Account</a>
+                {% endif %}
+            </div>
+            <div class="footer-links">
+                <h3>Contact</h3>
+                <span>hello@skillsphere.local</span>
+                <span>Community Support</span>
+                <div class="social-row" aria-label="Social links placeholder">
+                    <span>f</span>
+                    <span>x</span>
+                    <span>in</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="{% static 'js/animations.js' %}?v=skillsphere-reveal-safe-20260521"></script>
+    <script>
+        const navToggle = document.querySelector(".nav-toggle");
+        const navLinks = document.querySelector(".nav-links");
+
+        if (navToggle && navLinks) {
+            navToggle.addEventListener("click", () => {
+                const expanded = navToggle.getAttribute("aria-expanded") === "true";
+                navToggle.setAttribute("aria-expanded", String(!expanded));
+                navLinks.classList.toggle("open");
+            });
+        }
+    </script>
+</body>
+</html>

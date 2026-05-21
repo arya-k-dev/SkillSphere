@@ -1,0 +1,43 @@
+{% extends "dashboard_base.html" %}
+
+{% block title %}My Exchanges | SkillSphere{% endblock %}
+{% block dashboard_section %}My Exchanges{% endblock %}
+{% block dashboard_heading %}My Exchanges{% endblock %}
+{% block dashboard_subtitle %}<p class="topbar-subtitle">Active accepted exchanges and their chat rooms.</p>{% endblock %}
+
+{% block dashboard_content %}
+<section class="section">
+    <div class="container exchanges-grid">
+        {% for card in exchange_cards %}
+            <article class="exchange-card">
+                <div class="exchange-card-header">
+                    <div>
+                        <p class="section-label">Partner</p>
+                        <h2>{{ card.partner.profile.full_name|default:card.partner.username }}</h2>
+                    </div>
+                    <span class="active-status">Active</span>
+                </div>
+                <div class="request-skill-pair">
+                    <div>
+                        <span>You teach</span>
+                        <strong>{{ card.teach_skill.title|default:"Skill not selected" }}</strong>
+                    </div>
+                    <div>
+                        <span>You learn</span>
+                        <strong>{{ card.learn_skill.title|default:"Skill not selected" }}</strong>
+                    </div>
+                </div>
+                <div class="button-row">
+                    <a class="btn btn-primary" href="{% url 'messaging:exchange_chat' card.exchange.pk %}">Open Chat</a>
+                    <a class="btn btn-outline" href="{% url 'sessions:schedule' card.exchange.pk %}">Schedule Session</a>
+                </div>
+            </article>
+        {% empty %}
+            <div class="dashboard-empty message-empty">
+                <strong>No accepted exchanges yet</strong>
+                <p>Accepted requests will appear here as active exchanges.</p>
+            </div>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}

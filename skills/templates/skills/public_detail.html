@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+
+{% block title %}{{ public_skill.name }} | SkillSphere{% endblock %}
+{% block body_class %}landing-page{% endblock %}
+
+{% block content %}
+<section class="landing-section public-skill-detail">
+    <div class="container public-skill-detail-layout">
+        <article class="public-skill-detail-main">
+            <p class="landing-kicker">{{ public_skill.category }}</p>
+            <h1>{{ public_skill.name }}</h1>
+            <p>{{ public_skill.description }}</p>
+            <div class="public-detail-actions">
+                <a class="btn btn-primary" href="{% url 'matching:recommended' %}">Find Matching Partners</a>
+                <form method="post">
+                    {% csrf_token %}
+                    <button class="btn btn-soft" type="submit">Add to My Learning Skills</button>
+                </form>
+            </div>
+        </article>
+
+        <aside class="public-learn-card">
+            <h2>What users can learn</h2>
+            <ul>
+                {% for item in public_skill.learn %}
+                    <li>{{ item }}</li>
+                {% endfor %}
+            </ul>
+        </aside>
+    </div>
+</section>
+
+<section class="landing-section section-muted">
+    <div class="container public-community-grid">
+        <article class="public-community-card">
+            <h2>People offering this skill</h2>
+            <div class="public-person-list">
+                {% for skill in people_offering %}
+                    <a href="{% url 'matching:detail' skill.user.pk %}">
+                        <strong>{{ skill.user.profile.full_name|default:skill.user.username }}</strong>
+                        <span>{{ skill.level|title }} · {{ skill.mode|title }}</span>
+                    </a>
+                {% empty %}
+                    <p>No one is offering this skill yet.</p>
+                {% endfor %}
+            </div>
+        </article>
+
+        <article class="public-community-card">
+            <h2>People wanting to learn this skill</h2>
+            <div class="public-person-list">
+                {% for skill in people_wanting %}
+                    <a href="{% url 'matching:detail' skill.user.pk %}">
+                        <strong>{{ skill.user.profile.full_name|default:skill.user.username }}</strong>
+                        <span>{{ skill.level|title }} · {{ skill.mode|title }}</span>
+                    </a>
+                {% empty %}
+                    <p>No learners have listed this skill yet.</p>
+                {% endfor %}
+            </div>
+        </article>
+    </div>
+</section>
+
+<section class="landing-section">
+    <div class="container">
+        <div class="landing-section-heading">
+            <p class="landing-kicker">Recommended Partners</p>
+            <h2>Matches related to {{ public_skill.name }}</h2>
+        </div>
+        <div class="public-match-grid">
+            {% for match in recommended_matches %}
+                <article class="public-community-card">
+                    <h3>{{ match.user.profile.full_name|default:match.user.username }}</h3>
+                    <p>{{ match.quality }} · {{ match.score }}% match</p>
+                    <a class="public-skill-button" href="{% url 'matching:detail' match.user.pk %}">View Match</a>
+                </article>
+            {% empty %}
+                <div class="public-empty-card">
+                    <strong>No direct recommendations yet</strong>
+                    <p>Add this skill to your profile to improve your matches.</p>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}

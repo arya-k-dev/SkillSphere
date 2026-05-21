@@ -1,0 +1,38 @@
+{% extends "dashboard_base.html" %}
+
+{% block title %}{{ skill.title }} | SkillSphere{% endblock %}
+{% block dashboard_section %}Skill Detail{% endblock %}
+{% block dashboard_heading %}{{ skill.title }}{% endblock %}
+{% block dashboard_subtitle %}<p class="topbar-subtitle">Shared by {{ skill.user.get_full_name|default:skill.user.username }}</p>{% endblock %}
+
+{% block dashboard_content %}
+<section class="section">
+    <div class="container skill-detail-layout">
+        <article class="profile-details">
+            <div class="skill-card-badges">
+                <span class="badge category-badge">{{ skill.category }}</span>
+                <span class="badge type-badge">{{ skill.get_skill_type_display }}</span>
+                <span class="badge level-badge">{{ skill.get_level_display }}</span>
+                <span class="badge level-badge">{{ skill.get_mode_display }}</span>
+            </div>
+            <div>
+                <p class="section-label">Description</p>
+                <p>{{ skill.description|default:"No description added yet." }}</p>
+            </div>
+        </article>
+        <aside class="profile-card">
+            <div class="avatar">{{ skill.user.username|first|upper }}</div>
+            <h2>{{ skill.user.get_full_name|default:skill.user.username }}</h2>
+            <p>Added {{ skill.created_at|date:"M d, Y" }}</p>
+            {% if skill.user == request.user %}
+                <div class="stacked-actions">
+                    <a class="btn btn-primary full-width" href="{% url 'skills:edit' skill.pk %}">Edit Skill</a>
+                    <a class="btn btn-outline full-width" href="{% url 'skills:delete' skill.pk %}">Delete Skill</a>
+                </div>
+            {% else %}
+                <a class="btn btn-primary full-width" href="{% url 'skills:browse' %}">Browse Public Skills</a>
+            {% endif %}
+        </aside>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,29 @@
+{% extends "dashboard_base.html" %}
+
+{% block title %}{{ title }} | SkillSphere{% endblock %}
+{% block dashboard_section %}My Skills{% endblock %}
+{% block dashboard_heading %}{{ title }}{% endblock %}
+{% block dashboard_subtitle %}<p class="topbar-subtitle">Share a focused skill entry so future matches can understand your goals.</p>{% endblock %}
+
+{% block dashboard_content %}
+<section class="section">
+    <div class="container narrow-container">
+        <form method="post" class="form-card elevated-form skill-form">
+            {% csrf_token %}
+            {% for field in form %}
+                <div class="form-group">
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field }}
+                    {% for error in field.errors %}
+                        <p class="field-error">{{ error }}</p>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+            <div class="button-row">
+                <button class="btn btn-primary" type="submit">Save Skill</button>
+                <a class="btn btn-outline" href="{% url 'skills:my_skills' %}">Cancel</a>
+            </div>
+        </form>
+    </div>
+</section>
+{% endblock %}

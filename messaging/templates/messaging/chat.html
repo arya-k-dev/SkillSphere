@@ -1,0 +1,51 @@
+{% extends "dashboard_base.html" %}
+
+{% block title %}Chat with {{ partner.profile.full_name|default:partner.username }} | SkillSphere{% endblock %}
+{% block dashboard_section %}Messages{% endblock %}
+{% block dashboard_heading %}{{ partner.profile.full_name|default:partner.username }}{% endblock %}
+{% block dashboard_subtitle %}<p class="topbar-subtitle">Exchange chat for your active skill swap.</p>{% endblock %}
+
+{% block dashboard_content %}
+<section class="section chat-section">
+    <div class="chat-shell">
+        <div class="chat-summary-card">
+            <div>
+                <p class="section-label">Active exchange</p>
+                <h2>{{ partner.profile.full_name|default:partner.username }}</h2>
+            </div>
+            <div class="chat-summary-grid">
+                <div>
+                    <span>You teach</span>
+                    <strong>{{ summary.teach }}</strong>
+                </div>
+                <div>
+                    <span>You learn</span>
+                    <strong>{{ summary.learn }}</strong>
+                </div>
+            </div>
+        </div>
+
+        <div class="chat-window" aria-label="Messages">
+            {% for chat_message in chat_messages %}
+                <div class="message-row {% if chat_message.sender_id == request.user.pk %}is-mine{% endif %}">
+                    <div class="message-bubble">
+                        <p>{{ chat_message.body }}</p>
+                        <time>{{ chat_message.created_at|date:"M d, h:i A" }}</time>
+                    </div>
+                </div>
+            {% empty %}
+                <div class="dashboard-empty message-empty">
+                    <strong>No messages yet</strong>
+                    <p>Send the first message to plan your exchange.</p>
+                </div>
+            {% endfor %}
+        </div>
+
+        <form class="chat-compose" method="post">
+            {% csrf_token %}
+            <input type="text" name="body" placeholder="Write a message" autocomplete="off" required>
+            <button class="btn btn-primary" type="submit">Send</button>
+        </form>
+    </div>
+</section>
+{% endblock %}

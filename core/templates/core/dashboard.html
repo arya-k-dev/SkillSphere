@@ -1,0 +1,441 @@
+{% extends "dashboard_base.html" %}
+
+{% block title %}Dashboard | SkillSphere{% endblock %}
+{% block dashboard_section %}Dashboard{% endblock %}
+{% block dashboard_heading %}Dashboard{% endblock %}
+{% block dashboard_subtitle %}{% endblock %}
+
+{% block dashboard_content %}
+{{ dashboard_charts|json_script:"dashboard-chart-data" }}
+
+<div class="dashboard-analytics">
+    <section class="analytics-stats-grid" aria-label="Dashboard summary">
+        <article class="analytics-card app-card gradient-border-card accent-left stat-card">
+            <div class="stat-icon icon-badge"><i class="fa-solid fa-layer-group" aria-hidden="true"></i></div>
+            <div>
+                <p>Skills Listed</p>
+                <strong>{{ total_count|default:0 }}</strong>
+                <small>{{ teach_count|default:0 }} teaching, {{ learn_count|default:0 }} learning</small>
+            </div>
+        </article>
+        <article class="analytics-card app-card gradient-border-card accent-left stat-card">
+            <div class="stat-icon icon-badge"><i class="fa-solid fa-handshake" aria-hidden="true"></i></div>
+            <div>
+                <p>Matching Users</p>
+                <strong>{{ recommended_matches|length }}</strong>
+                <small>Recommended partners</small>
+            </div>
+        </article>
+        <article class="analytics-card app-card gradient-border-card accent-left stat-card">
+            <div class="stat-icon icon-badge"><i class="fa-solid fa-inbox" aria-hidden="true"></i></div>
+            <div>
+                <p>Pending Requests</p>
+                <strong>{{ pending_received_requests_count|default:0 }}</strong>
+                <small>Awaiting your response</small>
+            </div>
+        </article>
+        <article class="analytics-card app-card gradient-border-card accent-left stat-card">
+            <div class="stat-icon icon-badge"><i class="fa-solid fa-repeat" aria-hidden="true"></i></div>
+            <div>
+                <p>Accepted Exchanges</p>
+                <strong>{{ total_exchanges_count|default:0 }}</strong>
+                <small>Ready to continue</small>
+            </div>
+        </article>
+    </section>
+
+    <section class="analytics-grid">
+        <article class="analytics-card app-card gradient-border-card chart-card chart-card-wide">
+            <div class="analytics-card-heading">
+                <div>
+                    <p class="section-label">Activity</p>
+                    <h2>Weekly Learning Activity</h2>
+                </div>
+                <span>{{ hours_taught|add:hours_learned|floatformat:1 }} total hours</span>
+            </div>
+            <div class="chart-frame">
+                <canvas id="weeklyLearningChart"></canvas>
+            </div>
+        </article>
+
+        <article class="analytics-card app-card gradient-border-card chart-card">
+            <div class="analytics-card-heading">
+                <div>
+                    <p class="section-label">Sessions</p>
+                    <h2>Session Overview</h2>
+                </div>
+                <span>{{ completed_sessions_count|default:0 }} completed</span>
+            </div>
+            <div class="chart-frame donut-frame">
+                <canvas id="sessionOverviewChart"></canvas>
+            </div>
+        </article>
+    </section>
+
+    <section class="analytics-grid">
+        <article class="analytics-card app-card gradient-border-card chart-card">
+            <div class="analytics-card-heading">
+                <div>
+                    <p class="section-label">Skills</p>
+                    <h2>Your Skill Focus</h2>
+                </div>
+                <span>{{ total_count|default:0 }} total</span>
+            </div>
+            <div class="chart-frame donut-frame">
+                <canvas id="skillFocusChart"></canvas>
+            </div>
+        </article>
+
+        <article class="analytics-card app-card gradient-border-card accent-left progress-card">
+            <div class="analytics-card-heading">
+                <div>
+                    <p class="section-label">Momentum</p>
+                    <h2>Skill Progress</h2>
+                </div>
+            </div>
+            <div class="analytics-progress-list">
+                {% for item in progress_items %}
+                    <div class="analytics-progress-item" style="--progress: {{ item.percent }}%;">
+                        <div class="progress-line-top">
+                            <strong>{{ item.label }}</strong>
+                            <span>{{ item.value }}</span>
+                        </div>
+                        <div class="analytics-progress-track"><span></span></div>
+                        <p>{{ item.helper }}</p>
+                    </div>
+                {% endfor %}
+            </div>
+        </article>
+    </section>
+
+    <section class="analytics-grid">
+        <article class="analytics-card app-card gradient-border-card">
+            <div class="analytics-card-heading">
+                <div>
+                    <p class="section-label">Shortcuts</p>
+                    <h2>Quick Actions</h2>
+                </div>
+                <a href="{% url 'accounts:profile' %}">{{ request.user.profile.full_name|default:request.user.get_full_name|default:request.user.username }}</a>
+            </div>
+            <div class="analytics-action-grid">
+                <a class="primary-action" href="{% url 'skills:add' %}">Add Skill</a>
+                <a href="{% url 'matching:recommended' %}">Find Matches</a>
+                <a href="{% url 'matching:requests' %}">View Requests</a>
+                <a href="{% url 'sessions:list' %}">View Sessions</a>
+                <a href="{% url 'messaging:inbox' %}">Open Messages</a>
+            </div>
+        </article>
+
+        <article class="analytics-card app-card gradient-border-card">
+            <div class="analytics-card-heading">
+                <div>
+                    <p class="section-label">Next up</p>
+                    <h2>Upcoming Sessions</h2>
+                </div>
+                <a href="{% url 'sessions:list' %}">Manage</a>
+            </div>
+            {% if upcoming_sessions %}
+                <div class="analytics-list">
+                    {% for session in upcoming_sessions %}
+                            <div class="analytics-list-row">
+                            <div class="row-icon icon-badge"><i class="fa-solid fa-calendar-check" aria-hidden="true"></i></div>
+                            <div>
+                                <strong>{{ session.title }}</strong>
+                                <p>{{ session.scheduled_date|date:"M d" }} at {{ session.scheduled_time|time:"h:i A" }} with {{ session.partner.profile.full_name|default:session.partner.get_full_name|default:session.partner.username }}</p>
+                            </div>
+                            <div class="analytics-row-actions">
+                                {% if session.format == "video_call" and session.meeting_link %}
+                                    <a class="btn-mini positive" href="{{ session.meeting_link }}" target="_blank" rel="noopener">Join</a>
+                                {% endif %}
+                                <a class="btn-mini" href="{% url 'sessions:detail' session.pk %}">View</a>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="analytics-empty">
+                    <strong>No sessions scheduled</strong>
+                    <p>Accepted exchanges will appear here.</p>
+                </div>
+            {% endif %}
+        </article>
+    </section>
+
+    <section class="analytics-card app-card gradient-border-card">
+        <div class="analytics-card-heading">
+            <div>
+                <p class="section-label">Smart pairing</p>
+                <h2>Recommended Matches</h2>
+            </div>
+            <a href="{% url 'matching:recommended' %}">Explore</a>
+        </div>
+        {% if recommended_matches %}
+            <div class="analytics-match-grid">
+                {% for match in recommended_matches %}
+                    <article class="analytics-match-card app-card gradient-border-card">
+                        <div class="match-card-top">
+                            <div class="match-avatar small-avatar">{{ match.user.profile.full_name|default:match.user.get_full_name|default:match.user.username|first|upper }}</div>
+                            <div>
+                                <strong>{{ match.user.profile.full_name|default:match.user.get_full_name|default:match.user.username }}</strong>
+                                <p>{{ match.quality }}</p>
+                            </div>
+                            <span>{{ match.score }}%</span>
+                        </div>
+                        <div class="skill-pill-row">
+                            {% for skill in match.teach_skills|slice:":2" %}
+                                <span class="skill-chip">{{ skill.title }}</span>
+                            {% empty %}
+                                <span class="skill-chip">Skill mentor</span>
+                            {% endfor %}
+                        </div>
+                        <div class="match-card-actions">
+                            {% if match.request_state.status == "accepted" %}
+                                <a class="btn-mini positive" href="{% url 'matching:exchanges' %}">Exchange Active</a>
+                            {% elif match.request_state.status == "pending" %}
+                                <button class="btn-mini match-btn-disabled" type="button" disabled>Request Sent</button>
+                            {% else %}
+                                <form action="{% url 'matching:send_request' match.user.pk %}" method="post">
+                                    {% csrf_token %}
+                                    <button class="btn-mini positive" type="submit">Send Request</button>
+                                </form>
+                            {% endif %}
+                            <a class="btn-mini" href="{% url 'matching:detail' match.user.pk %}">View Profile</a>
+                        </div>
+                    </article>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="analytics-empty">
+                <strong>No recommendations yet</strong>
+                <p>Add more skills to improve your matches.</p>
+            </div>
+        {% endif %}
+    </section>
+
+    <section class="analytics-grid">
+        <article class="analytics-card app-card gradient-border-card">
+            <div class="analytics-card-heading">
+                <div>
+                    <p class="section-label">Updates</p>
+                    <h2>Recent Activity</h2>
+                </div>
+            </div>
+            {% if recent_activity %}
+                <div class="analytics-timeline">
+                    {% for item in recent_activity|slice:":5" %}
+                        <div class="timeline-item accent-left">
+                            <span></span>
+                            <div>
+                                <strong>{{ item.label }}</strong>
+                                <p>{{ item.title }} - {{ item.meta }}</p>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="analytics-empty">
+                    <strong>No activity yet</strong>
+                    <p>Your exchanges, badges, and skill updates will collect here.</p>
+                </div>
+            {% endif %}
+        </article>
+
+        <article class="analytics-card app-card gradient-border-card">
+            <div class="analytics-card-heading">
+                <div>
+                    <p class="section-label">Community</p>
+                    <h2>Top Experts</h2>
+                </div>
+            </div>
+            {% if top_experts %}
+                <div class="analytics-leaderboard">
+                    {% for expert in top_experts|slice:":4" %}
+                        <a href="{% url 'matching:detail' expert.pk %}">
+                            <span>{{ forloop.counter }}</span>
+                            <strong>{{ expert.profile.full_name|default:expert.get_full_name|default:expert.username }}</strong>
+                            <b>{{ expert.skill_count|add:expert.exchange_count }} XP</b>
+                        </a>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="analytics-empty">
+                    <strong>No experts ranked yet</strong>
+                    <p>Community contributors will appear as skills and exchanges grow.</p>
+                </div>
+            {% endif %}
+        </article>
+    </section>
+
+    <section class="analytics-card app-card gradient-border-card achievements-compact-card">
+        <div class="analytics-card-heading">
+            <div>
+                <p class="section-label">Milestones</p>
+                <h2>Achievements Preview</h2>
+            </div>
+            <a href="{% url 'engagement:achievements' %}">View all achievements</a>
+        </div>
+        {% if latest_achievements %}
+            <div class="analytics-achievement-grid">
+                {% for unlock in latest_achievements %}
+                    <div class="achievement-badge unlocked">
+                        <span class="achievement-icon" aria-hidden="true">
+                            {% if unlock.achievement.code == "helpful_mentor" %}
+                                <i class="fa-solid fa-user-graduate"></i>
+                            {% elif unlock.achievement.code == "skill_sharer" %}
+                                <i class="fa-solid fa-layer-group"></i>
+                            {% elif unlock.achievement.code == "top_rated" %}
+                                <i class="fa-solid fa-trophy"></i>
+                            {% elif unlock.achievement.name == "Session Expert" %}
+                                <i class="fa-solid fa-trophy"></i>
+                            {% elif unlock.achievement.code == "first_session_completed" %}
+                                <i class="fa-solid fa-award"></i>
+                            {% elif unlock.achievement.name == "Quick Learner" or unlock.achievement.code == "active_learner" %}
+                                <i class="fa-solid fa-bolt"></i>
+                            {% elif unlock.achievement.code == "community_star" %}
+                                <i class="fa-solid fa-star"></i>
+                            {% elif unlock.achievement.code == "first_skill_added" %}
+                                <i class="fa-solid fa-book-open"></i>
+                            {% elif unlock.achievement.code == "first_exchange_accepted" %}
+                                <i class="fa-solid fa-handshake"></i>
+                            {% else %}
+                                <i class="fa-solid fa-medal"></i>
+                            {% endif %}
+                        </span>
+                        <strong>{{ unlock.achievement.name }}</strong>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="analytics-empty">
+                <strong>No achievements unlocked yet</strong>
+                <p>Start by adding a skill or completing your first session.</p>
+            </div>
+        {% endif %}
+    </section>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script>
+    (() => {
+        const chartNode = document.getElementById("dashboard-chart-data");
+        if (!chartNode || !window.Chart) return;
+
+        const data = JSON.parse(chartNode.textContent);
+        const teal = "#1D9E75";
+        const sessionBar = "#DDF5EC";
+        const muted = "#6B7280";
+        const border = "rgba(107, 114, 128, 0.14)";
+        const weeklyMax = Math.max(...data.weekly.sessions, ...data.weekly.hours, 0);
+        const weeklySuggestedMax = weeklyMax <= 1 ? 2 : Math.ceil(weeklyMax * 1.25);
+
+        const baseOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { labels: { boxWidth: 10, boxHeight: 10, color: muted, usePointStyle: true } },
+                tooltip: {
+                    backgroundColor: "#162033",
+                    padding: 12,
+                    cornerRadius: 12,
+                    displayColors: true
+                }
+            }
+        };
+
+        const weeklyCanvas = document.getElementById("weeklyLearningChart");
+        const weeklyGradient = weeklyCanvas.getContext("2d").createLinearGradient(0, 0, 0, 260);
+        weeklyGradient.addColorStop(0, "rgba(29, 158, 117, 0.18)");
+        weeklyGradient.addColorStop(1, "rgba(29, 158, 117, 0.02)");
+
+        new Chart(weeklyCanvas, {
+            type: "bar",
+            data: {
+                labels: data.weekly.labels,
+                datasets: [
+                    {
+                        type: "bar",
+                        label: "Sessions",
+                        data: data.weekly.sessions,
+                        borderRadius: 12,
+                        borderSkipped: false,
+                        backgroundColor: sessionBar,
+                        borderColor: "rgba(29, 158, 117, 0.12)",
+                        borderWidth: 1,
+                        barPercentage: 0.55,
+                        categoryPercentage: 0.7
+                    },
+                    {
+                        type: "line",
+                        label: "Hours",
+                        data: data.weekly.hours,
+                        borderColor: teal,
+                        backgroundColor: weeklyGradient,
+                        borderWidth: 3,
+                        tension: 0.42,
+                        cubicInterpolationMode: "monotone",
+                        pointRadius: 3,
+                        pointHoverRadius: 5,
+                        pointBackgroundColor: teal,
+                        pointBorderColor: "#FFFFFF",
+                        pointBorderWidth: 2,
+                        fill: true
+                    }
+                ]
+            },
+            options: {
+                ...baseOptions,
+                interaction: { mode: "index", intersect: false },
+                scales: {
+                    x: {
+                        grid: { display: false },
+                        ticks: { color: muted, font: { size: 12 } }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        suggestedMax: weeklySuggestedMax,
+                        grace: "12%",
+                        grid: { color: border, drawBorder: false },
+                        border: { display: false },
+                        ticks: {
+                            color: muted,
+                            precision: 0,
+                            maxTicksLimit: 5,
+                            padding: 8
+                        }
+                    }
+                }
+            }
+        });
+
+        new Chart(document.getElementById("sessionOverviewChart"), {
+            type: "doughnut",
+            data: {
+                labels: ["Completed", "Upcoming", "Pending"],
+                datasets: [{
+                    data: [data.sessions.completed, data.sessions.upcoming, data.sessions.pending],
+                    backgroundColor: [teal, "#7DD3BD", "#D1D5DB"],
+                    borderColor: "#FFFFFF",
+                    borderWidth: 4,
+                    hoverOffset: 4
+                }]
+            },
+            options: { ...baseOptions, cutout: "68%" }
+        });
+
+        new Chart(document.getElementById("skillFocusChart"), {
+            type: "doughnut",
+            data: {
+                labels: ["Teaching", "Learning", "Both"],
+                datasets: [{
+                    data: [data.skills.teaching, data.skills.learning, data.skills.both],
+                    backgroundColor: [teal, "#99E3D1", "#162033"],
+                    borderColor: "#FFFFFF",
+                    borderWidth: 4,
+                    hoverOffset: 4
+                }]
+            },
+            options: { ...baseOptions, cutout: "68%" }
+        });
+    })();
+</script>
+{% endblock %}

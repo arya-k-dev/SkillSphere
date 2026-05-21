@@ -1,0 +1,30 @@
+<article class="skill-card app-card gradient-border-card reveal">
+    <div class="skill-card-badges">
+        <span class="icon-badge category-icon-badge">{{ skill.category|first|upper }}</span>
+        <span class="badge category-badge skill-chip">{{ skill.category }}</span>
+        <span class="badge type-badge status-badge">
+            {% if skill.skill_type == "teach" %}
+                Offering to Teach
+            {% else %}
+                Wants to Learn
+            {% endif %}
+        </span>
+        <span class="badge level-badge skill-chip">{{ skill.get_level_display }}</span>
+        <span class="badge level-badge skill-chip">{{ skill.get_mode_display }}</span>
+    </div>
+    <div class="skill-card-main">
+        <h2>{{ skill.title }}</h2>
+        <p class="skill-intent">
+            {% if skill.skill_type == "teach" %}
+                Can teach this skill to others
+            {% else %}
+                Looking for someone to teach this skill
+            {% endif %}
+        </p>
+        <p class="skill-description">{{ skill.description|default:"No description added yet."|truncatewords:22 }}</p>
+    </div>
+    <div class="skill-card-footer">
+        <span>By {{ skill.user.get_full_name|default:skill.user.username }}</span>
+        <a class="btn btn-outline skill-card-cta" href="{% url 'skills:detail' skill.pk %}">View Details</a>
+    </div>
+</article>

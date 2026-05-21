@@ -1,0 +1,24 @@
+<article class="session-system-card reveal">
+    <div class="session-card-top">
+        <div>
+            <p class="section-label">{{ session.get_format_display }}</p>
+            <h2>{{ session.title }}</h2>
+            <p>With {{ session.partner.profile.full_name|default:session.partner.username }}</p>
+        </div>
+        <span class="session-status status-{{ session.status }}">{{ session.get_status_display }}</span>
+    </div>
+    <div class="session-meta-grid">
+        <div><span>Date</span><strong>{{ session.scheduled_date|date:"M d, Y" }}</strong></div>
+        <div><span>Time</span><strong>{{ session.scheduled_time|time:"h:i A" }}</strong></div>
+        <div><span>Duration</span><strong>{{ session.duration_minutes }} min</strong></div>
+    </div>
+    <div class="session-card-actions">
+        <a class="btn-mini positive" href="{% url 'sessions:detail' session.pk %}">View</a>
+        {% if session.status == "scheduled" %}
+            <a class="btn-mini" href="{% url 'sessions:edit' session.pk %}">Edit</a>
+        {% endif %}
+        {% if session.format == "video_call" and session.meeting_link %}
+            <a class="btn-mini" href="{{ session.meeting_link }}" target="_blank" rel="noopener">Join Meeting</a>
+        {% endif %}
+    </div>
+</article>

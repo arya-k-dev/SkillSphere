@@ -1,0 +1,113 @@
+{% extends "dashboard_base.html" %}
+
+{% block title %}Search | SkillSphere{% endblock %}
+{% block dashboard_section %}Search{% endblock %}
+{% block dashboard_heading %}Search{% endblock %}
+{% block dashboard_subtitle %}<p class="topbar-subtitle">Find skills, users, sessions, requests, and exchanges you can access.</p>{% endblock %}
+
+{% block dashboard_content %}
+<section class="section global-search-page">
+    <div class="global-search-shell">
+        {% if not query %}
+            <div class="search-empty-panel">
+                <strong>Start typing to search skills, users, sessions, or requests.</strong>
+                <p>Use the search box above to find relevant SkillSphere items.</p>
+            </div>
+        {% elif not has_results %}
+            <div class="search-empty-panel">
+                <strong>No results found for "{{ query }}"</strong>
+                <p>Try a skill title, username, session topic, or exchange partner name.</p>
+            </div>
+        {% else %}
+            <div class="search-results-panel">
+                <div class="search-panel-heading">
+                    <p class="section-label">Search Results</p>
+                    <h2>Results for "{{ query }}"</h2>
+                </div>
+
+                <div class="search-result-groups">
+                    <article class="search-result-group">
+                        <h3>Skills</h3>
+                        {% if results.skills %}
+                            <div class="search-result-list">
+                                {% for skill in results.skills %}
+                                    <a class="search-result-item" href="{% url 'skills:detail' skill.pk %}">
+                                        <span>Skill</span>
+                                        <div>
+                                            <strong>{{ skill.title }}</strong>
+                                            <p>{{ skill.description|default:skill.category|truncatewords:18 }}</p>
+                                        </div>
+                                    </a>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <p class="search-group-empty">No skill matches.</p>
+                        {% endif %}
+                    </article>
+
+                    <article class="search-result-group">
+                        <h3>Users</h3>
+                        {% if results.users %}
+                            <div class="search-result-list">
+                                {% for user_result in results.users %}
+                                    <a class="search-result-item" href="{% url 'matching:detail' user_result.pk %}">
+                                        <span>User</span>
+                                        <div>
+                                            <strong>{{ user_result.profile.full_name|default:user_result.username }}</strong>
+                                            <p>{{ user_result.profile.headline|default:user_result.username|truncatewords:18 }}</p>
+                                        </div>
+                                    </a>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <p class="search-group-empty">No user matches.</p>
+                        {% endif %}
+                    </article>
+
+                    <article class="search-result-group">
+                        <h3>Sessions</h3>
+                        {% if results.sessions %}
+                            <div class="search-result-list">
+                                {% for session in results.sessions %}
+                                    <a class="search-result-item" href="{% url 'sessions:detail' session.pk %}">
+                                        <span>Session</span>
+                                        <div>
+                                            <strong>{{ session.title }}</strong>
+                                            <p>{{ session.description|default:session.get_status_display|truncatewords:18 }}</p>
+                                        </div>
+                                    </a>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <p class="search-group-empty">No session matches.</p>
+                        {% endif %}
+                    </article>
+
+                    <article class="search-result-group">
+                        <h3>Requests/Exchanges</h3>
+                        {% if results.requests %}
+                            <div class="search-result-list">
+                                {% for item in results.requests %}
+                                    {% if item.url_name == "requests_list" %}
+                                        <a class="search-result-item" href="{% url 'requests_list' %}">
+                                    {% else %}
+                                        <a class="search-result-item" href="{% url 'matching:exchanges' %}">
+                                    {% endif %}
+                                            <span>{{ item.type }}</span>
+                                            <div>
+                                                <strong>{{ item.title }}</strong>
+                                                <p>{{ item.description }} - {{ item.meta }}</p>
+                                            </div>
+                                        </a>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <p class="search-group-empty">No request or exchange matches.</p>
+                        {% endif %}
+                    </article>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

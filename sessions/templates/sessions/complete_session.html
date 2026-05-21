@@ -1,0 +1,36 @@
+{% extends "dashboard_base.html" %}
+
+{% block title %}Complete Session | SkillSphere{% endblock %}
+{% block dashboard_section %}Sessions{% endblock %}
+{% block dashboard_heading %}Complete Session{% endblock %}
+{% block dashboard_subtitle %}<p class="topbar-subtitle">Capture outcomes, attendance, and follow-up work.</p>{% endblock %}
+
+{% block dashboard_content %}
+<section class="section session-system-page">
+    <div class="session-form-shell">
+        <article class="session-form-card">
+            <div class="session-exchange-summary">
+                <p class="section-label">Session</p>
+                <h2>{{ session.title }}</h2>
+                <p>{{ session.scheduled_date|date:"M d, Y" }} at {{ session.scheduled_time|time:"h:i A" }}</p>
+            </div>
+            <form method="post" class="session-form">
+                {% csrf_token %}
+                <div class="session-form-grid">
+                    {% for field in form %}
+                        <div class="form-group {% if field.name != 'mentor_attendance' and field.name != 'learner_attendance' %}wide{% endif %}">
+                            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                            {{ field }}
+                            {% for error in field.errors %}<p class="field-error">{{ error }}</p>{% endfor %}
+                        </div>
+                    {% endfor %}
+                </div>
+                <div class="button-row session-actions-row">
+                    <button class="btn btn-primary" type="submit">Mark Session Complete</button>
+                    <a class="btn btn-outline" href="{% url 'sessions:detail' session.pk %}">Back</a>
+                </div>
+            </form>
+        </article>
+    </div>
+</section>
+{% endblock %}

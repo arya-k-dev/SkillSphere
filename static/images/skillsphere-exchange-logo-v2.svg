@@ -1,0 +1,13 @@
+<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">SkillSphere exchange logo</title>
+  <desc id="desc">A modern teal skill exchange icon with rounded arrows around a learning card.</desc>
+  <path d="M50 17H18" stroke="#1D9E75" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M19 10L8 17L19 24" fill="#1D9E75"/>
+  <path d="M50 17C54.4 17 57 19.6 57 24V43" stroke="#8EDDC3" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M14 47H46" stroke="#1D9E75" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M45 40L56 47L45 54" fill="#1D9E75"/>
+  <path d="M14 47C9.6 47 7 44.4 7 40V21" stroke="#8EDDC3" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="18" y="22" width="30" height="26" rx="5.5" fill="#FFFFFF" stroke="#1D9E75" stroke-width="4.4"/>
+  <path d="M26 24V37C26 40.3 28.7 43 32 43H46" stroke="#BDECDC" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="33" y="39" text-anchor="middle" font-family="Inter, Poppins, Arial, sans-serif" font-size="17" font-weight="800" fill="#1D9E75">S</text>
+</svg>

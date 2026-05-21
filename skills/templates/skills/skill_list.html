@@ -1,0 +1,32 @@
+{% extends "dashboard_base.html" %}
+
+{% block title %}Skills | SkillSphere{% endblock %}
+{% block dashboard_section %}Explore Skills{% endblock %}
+{% block dashboard_heading %}Discover community skills{% endblock %}
+{% block dashboard_subtitle %}<p class="topbar-subtitle">Browse what members want to teach and what they are hoping to learn.</p>{% endblock %}
+{% block dashboard_actions %}
+<div class="topbar-page-actions">
+    <a class="btn btn-primary" href="{% url 'skills:add' %}">Add a Skill</a>
+    <a class="btn btn-outline" href="{% url 'skills:my_skills' %}">View My Skills</a>
+</div>
+{% endblock %}
+
+{% block dashboard_content %}
+<section class="section">
+    <div class="container">
+        {% if skills %}
+            <div class="skills-grid">
+                {% for skill in skills %}
+                    {% include "skills/skill_card.html" %}
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="empty-state">
+                <h2>No skills have been added yet.</h2>
+                <p>Start the community by sharing what you can teach or what you want to learn.</p>
+                <a class="btn btn-primary" href="{% url 'skills:add' %}">Add a Skill</a>
+            </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

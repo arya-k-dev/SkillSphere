@@ -1,0 +1,104 @@
+{% extends "dashboard_base.html" %}
+{% load static %}
+
+{% block title %}Certificate | SkillSphere{% endblock %}
+{% block dashboard_heading %}Certificate{% endblock %}
+{% block dashboard_subtitle %}<p class="topbar-subtitle">Print or save this certificate from your browser.</p>{% endblock %}
+
+{% block dashboard_content %}
+<section class="engagement-page certificate-detail-page">
+    <article class="certificate-document glass-card gradient-border-card reveal">
+        <div class="certificate-watermark" aria-hidden="true">S</div>
+        <div class="certificate-frame">
+            <header class="certificate-header">
+                <div class="certificate-brand">
+                    <img class="brand-mark" src="{% static 'images/skillsphere-exchange-logo-v2.svg' %}" alt="" aria-hidden="true">
+                    <span class="logo-text"><span class="logo-skill">Skill</span><span class="logo-sphere">Sphere</span></span>
+                </div>
+                <div class="certificate-seal" aria-label="Verified certificate">
+                    <i class="fa-solid fa-check" aria-hidden="true"></i>
+                    <span>Verified</span>
+                </div>
+            </header>
+
+            <div class="certificate-main">
+                <p class="section-label">
+                    {% if certificate.certificate_type == "mentor_contribution" %}
+                        Skill Mentorship Certificate
+                    {% else %}
+                        Skill Completion Certificate
+                    {% endif %}
+                </p>
+                <h2>{{ certificate.title }}</h2>
+                <p class="certificate-kicker">This certificate is proudly issued to</p>
+                <h1>{{ certificate.user.profile.full_name|default:certificate.user.username }}</h1>
+                {% if certificate.certificate_type == "learner_completion" %}
+                    <p class="certificate-role-text">
+                        This certifies that {{ certificate.learner_name|default:certificate.user.username }} successfully completed learning
+                        <strong>{{ certificate.skill.title|default:"this skill" }}</strong> through a SkillSphere skill exchange.
+                    </p>
+                {% elif certificate.certificate_type == "mentor_contribution" %}
+                    <p class="certificate-role-text">
+                        This certifies that {{ certificate.mentor_name|default:certificate.user.username }} successfully mentored and taught
+                        <strong>{{ certificate.skill.title|default:"this skill" }}</strong> through a SkillSphere skill exchange.
+                    </p>
+                {% endif %}
+            </div>
+
+            <div class="certificate-info-grid">
+                <div><span>Skill Name</span><strong>{{ certificate.skill.title|default:"Skill exchange" }}</strong></div>
+                <div><span>Certificate Role</span><strong>{{ certificate.get_certificate_type_display }}</strong></div>
+                <div><span>{% if certificate.certificate_type == "mentor_contribution" %}Hours Taught{% else %}Hours Completed{% endif %}</span><strong>{{ certificate.hours_completed|floatformat:1 }}</strong></div>
+                <div><span>Mentor</span><strong>{{ certificate.mentor_name|default:"Not recorded" }}</strong></div>
+                <div><span>Learner</span><strong>{{ certificate.learner_name|default:"Not recorded" }}</strong></div>
+                <div><span>Rating</span><strong>{% if certificate.rating %}{{ certificate.rating|floatformat:1 }} / 5{% else %}Not rated{% endif %}</strong></div>
+                <div><span>{% if certificate.certificate_type == "mentor_contribution" %}Sessions Conducted{% else %}Sessions Completed{% endif %}</span><strong>{{ certificate.sessions_count|default:1 }}</strong></div>
+                <div><span>Issued Date</span><strong>{{ certificate.issued_date|date:"M d, Y" }}</strong></div>
+                <div><span>Verification Code</span><strong>{{ certificate.verification_code }}</strong></div>
+            </div>
+
+            <footer class="certificate-footer">
+                <div class="certificate-signature">
+                    <span></span>
+                    <strong>SkillSphere</strong>
+                    <small>Verified Achievement Authority</small>
+                </div>
+                <div class="certificate-verification">
+                    <span>Certificate ID: {{ certificate.certificate_id }}</span>
+                    <span>Verification Code: {{ certificate.verification_code }}</span>
+                </div>
+                <div class="certificate-seal certificate-seal-large" aria-hidden="true">
+                    <i class="fa-solid fa-check" aria-hidden="true"></i>
+                    <span>Verified</span>
+                </div>
+            </footer>
+        </div>
+    </article>
+    <div class="certificate-actions">
+        <button class="engagement-button" type="button" onclick="window.print()"><i class="fa-solid fa-download" aria-hidden="true"></i>Download/Print Certificate</button>
+        <button class="engagement-button secondary" type="button" data-share-certificate><i class="fa-solid fa-share-nodes" aria-hidden="true"></i>Share Certificate</button>
+        <a class="engagement-button secondary" href="{% url 'engagement:certificates' %}">Back to Certificates</a>
+    </div>
+</section>
+<script>
+    document.querySelector("[data-share-certificate]")?.addEventListener("click", async (event) => {
+        const shareData = {
+            title: "{{ certificate.title|escapejs }}",
+            text: "SkillSphere verified certificate",
+            url: window.location.href
+        };
+        try {
+            if (navigator.share) {
+                await navigator.share(shareData);
+                return;
+            }
+            if (navigator.clipboard) {
+                await navigator.clipboard.writeText(window.location.href);
+                event.currentTarget.textContent = "Certificate Link Copied";
+            }
+        } catch (error) {
+            event.currentTarget.textContent = "Share Certificate";
+        }
+    });
+</script>
+{% endblock %}

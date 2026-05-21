@@ -1,0 +1,21 @@
+{% extends "dashboard_base.html" %}
+
+{% block title %}Delete Skill | SkillSphere{% endblock %}
+{% block dashboard_section %}My Skills{% endblock %}
+{% block dashboard_heading %}Remove {{ skill.title }}?{% endblock %}
+{% block dashboard_subtitle %}<p class="topbar-subtitle">This only removes the skill entry from your profile.</p>{% endblock %}
+
+{% block dashboard_content %}
+<section class="section">
+    <div class="container narrow-container">
+        <form method="post" class="form-card elevated-form">
+            {% csrf_token %}
+            <p>Are you sure you want to delete this skill?</p>
+            <div class="button-row">
+                <button class="btn btn-primary" type="submit">Delete Skill</button>
+                <a class="btn btn-outline" href="{% url 'skills:detail' skill.pk %}">Cancel</a>
+            </div>
+        </form>
+    </div>
+</section>
+{% endblock %}

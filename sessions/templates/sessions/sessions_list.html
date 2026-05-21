@@ -1,0 +1,39 @@
+{% extends "dashboard_base.html" %}
+
+{% block title %}Sessions | SkillSphere{% endblock %}
+{% block dashboard_section %}Sessions{% endblock %}
+{% block dashboard_heading %}Sessions{% endblock %}
+{% block dashboard_subtitle %}<p class="topbar-subtitle">Schedule, join, complete, and review your learning sessions.</p>{% endblock %}
+
+{% block dashboard_content %}
+<section class="section session-system-page">
+    <div class="session-list-shell">
+        <div class="session-stats-grid">
+            <article><span>{{ stats.upcoming_count }}</span><p>Upcoming</p></article>
+            <article><span>{{ stats.completed_count }}</span><p>Completed</p></article>
+            <article><span>{{ stats.hours_taught|floatformat:1 }}</span><p>Hours taught</p></article>
+            <article><span>{{ stats.hours_learned|floatformat:1 }}</span><p>Hours learned</p></article>
+            <article><span>{{ stats.average_rating|floatformat:1 }}</span><p>Average rating</p></article>
+        </div>
+
+        <nav class="session-filter-tabs" aria-label="Session filters">
+            <a class="{% if active_status == 'upcoming' %}active{% endif %}" href="{% url 'sessions:list' %}?status=upcoming">Upcoming</a>
+            <a class="{% if active_status == 'completed' %}active{% endif %}" href="{% url 'sessions:list' %}?status=completed">Completed</a>
+            <a class="{% if active_status == 'cancelled' %}active{% endif %}" href="{% url 'sessions:list' %}?status=cancelled">Cancelled</a>
+        </nav>
+
+        {% if sessions %}
+            <div class="session-card-grid">
+                {% for session in sessions %}
+                    {% include "sessions/session_card.html" %}
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="dashboard-empty message-empty">
+                <strong>No sessions found</strong>
+                <p>Your scheduled, completed, or cancelled sessions will appear here.</p>
+            </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

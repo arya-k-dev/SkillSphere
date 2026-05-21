@@ -1,0 +1,54 @@
+{% extends "dashboard_base.html" %}
+
+{% block title %}Certificates | SkillSphere{% endblock %}
+{% block dashboard_heading %}Certificates{% endblock %}
+{% block dashboard_subtitle %}<p class="topbar-subtitle">View certificates earned from completed sessions and skill milestones.</p>{% endblock %}
+
+{% block dashboard_content %}
+<section class="engagement-page">
+    <div class="engagement-page-head">
+        <div>
+            <p class="section-label">Certificates</p>
+            <h2>Your certificates</h2>
+        </div>
+        <span>{{ certificates|length }} issued</span>
+    </div>
+
+    {% if certificates %}
+        <div class="certificate-list-grid">
+            {% for certificate in certificates %}
+                <article class="engagement-card certificate-list-card reveal">
+                    <div class="certificate-card-icon">
+                        <i class="fa-solid fa-certificate" aria-hidden="true"></i>
+                    </div>
+                    <p class="section-label">{{ certificate.certificate_id }}</p>
+                    <h3>{{ certificate.title }}</h3>
+                    <p>{{ certificate.skill.title|default:"Skill exchange" }}</p>
+                    <div class="certificate-role-row">
+                        <span>
+                            {% if certificate.certificate_type == "mentor_contribution" %}
+                                Skill Mentorship Certificate
+                            {% else %}
+                                Skill Completion Certificate
+                            {% endif %}
+                        </span>
+                        <span>Role: {{ certificate.get_certificate_type_display }}</span>
+                    </div>
+                    <div class="certificate-card-meta">
+                        <span>Issued {{ certificate.issued_date|date:"M d, Y" }}</span>
+                        <span>{{ certificate.hours_completed|floatformat:1 }} hours</span>
+                        <span>{% if certificate.rating %}{{ certificate.rating|floatformat:1 }} / 5{% else %}Rating pending{% endif %}</span>
+                        <span>Code {{ certificate.verification_code }}</span>
+                    </div>
+                    <a class="engagement-button" href="{% url 'engagement:certificate_detail' certificate.pk %}">View Certificate</a>
+                </article>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="engagement-empty">
+            <strong>No certificates yet</strong>
+            <p>Complete sessions, collect feedback, and reach skill milestones to earn certificates.</p>
+        </div>
+    {% endif %}
+</section>
+{% endblock %}

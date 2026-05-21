@@ -1,0 +1,26 @@
+{% extends "dashboard_base.html" %}
+
+{% block title %}Recommended Matches | SkillSphere{% endblock %}
+{% block dashboard_section %}Matches{% endblock %}
+{% block dashboard_heading %}Recommended skill exchanges{% endblock %}
+{% block dashboard_subtitle %}<p class="topbar-subtitle">SkillSphere compares what you want to learn with what others can teach, then looks for mutual learning value.</p>{% endblock %}
+
+{% block dashboard_content %}
+<section class="section recommended-matches-page">
+    <div class="container">
+        {% if matches %}
+            <div class="match-grid matches-grid">
+                {% for match in matches %}
+                    {% include "matching/match_card.html" %}
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="empty-state">
+                <h2>No recommended matches yet.</h2>
+                <p>Add skills you can teach and skills you want to learn so SkillSphere can compare your goals with the community.</p>
+                <a class="btn btn-primary" href="{% url 'skills:add' %}">Add a Skill</a>
+            </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

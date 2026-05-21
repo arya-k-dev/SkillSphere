@@ -1,0 +1,63 @@
+{% extends "dashboard_base.html" %}
+
+{% block title %}Notifications | SkillSphere{% endblock %}
+{% block dashboard_section %}Notifications{% endblock %}
+{% block dashboard_heading %}Notifications{% endblock %}
+{% block dashboard_subtitle %}<p class="topbar-subtitle">Updates about requests, messages, sessions, and achievements.</p>{% endblock %}
+
+{% block dashboard_actions %}
+<div class="topbar-page-actions notification-page-actions">
+    <form action="{% url 'notifications_read_all' %}" method="post">
+        {% csrf_token %}
+        <button class="btn btn-primary" type="submit">Mark all as read</button>
+    </form>
+    <form action="{% url 'notifications_clear_read' %}" method="post">
+        {% csrf_token %}
+        <button class="btn btn-outline" type="submit">Clear read</button>
+    </form>
+</div>
+{% endblock %}
+
+{% block dashboard_content %}
+<section class="section notifications-page">
+    <div class="notifications-shell">
+        {% if notifications %}
+            <div class="notification-page-list">
+                {% for notification in notifications %}
+                    <a class="notification-page-card {% if not notification.is_read %}unread{% endif %}" href="{% url 'notification_read' notification.pk %}">
+                        <div class="notification-type-badge">
+                            {% if notification.notification_type == "request_sent" %}RQ
+                            {% elif notification.notification_type == "request_accepted" %}OK
+                            {% elif notification.notification_type == "request_rejected" %}NO
+                            {% elif notification.notification_type == "message" %}MS
+                            {% elif notification.notification_type == "session" %}SE
+                            {% elif notification.notification_type == "rating" %}RT
+                            {% elif notification.notification_type == "badge" %}BD
+                            {% elif notification.notification_type == "certificate" %}CF
+                            {% else %}NT{% endif %}
+                        </div>
+                        <div class="notification-page-copy">
+                            <div class="notification-page-top">
+                                <h2>{{ notification.title }}</h2>
+                                <time>{{ notification.created_at|date:"M d, h:i A" }}</time>
+                            </div>
+                            <p>{{ notification.message }}</p>
+                            <div class="notification-page-footer">
+                                <span>{{ notification.get_notification_type_display }} · {% if notification.is_read %}Read{% else %}Unread{% endif %}</span>
+                                <span class="notification-link-button">
+                                    {% if notification.related_url %}Open{% elif notification.is_read %}Read{% else %}Mark as read{% endif %}
+                                </span>
+                            </div>
+                        </div>
+                    </a>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="dashboard-empty notification-empty">
+                <strong>No notifications yet</strong>
+                <p>Updates about requests, messages, sessions, and achievements will appear here.</p>
+            </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

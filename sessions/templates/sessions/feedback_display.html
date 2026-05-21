@@ -1,0 +1,21 @@
+{% if feedback %}
+    <div class="rating-line" aria-label="{{ feedback.rating }} out of 5 stars">
+        <span class="rating-stars">
+            {% for star in "12345" %}
+                <span class="{% if forloop.counter <= feedback.rating %}filled{% endif %}">★</span>
+            {% endfor %}
+        </span>
+        <strong>{{ feedback.rating }}/5</strong>
+    </div>
+    <p class="feedback-comment">{{ feedback.comments|default:"No comment added." }}</p>
+    {% if feedback.tags %}
+        <div class="feedback-tags">
+            {% for tag in feedback.tags.split %}
+                <span>{{ tag }}</span>
+            {% endfor %}
+        </div>
+    {% endif %}
+    <small>Submitted {{ feedback.created_at|date:"M d, Y, h:i A" }}</small>
+{% else %}
+    <p class="feedback-empty">Not submitted yet.</p>
+{% endif %}

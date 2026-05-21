@@ -1,0 +1,77 @@
+<article class="match-card app-card gradient-border-card reveal{% if compact %} compact-match-card{% endif %}">
+    <div class="match-card-top match-card-header">
+        <div class="match-user-block match-card-user">
+            <div class="match-avatar icon-badge">
+                {{ match.user.profile.full_name|default:match.user.username|first|upper }}
+            </div>
+            <div class="match-user-copy">
+                <h2 class="user-name match-name">{{ match.user.profile.full_name|default:match.user.username }}</h2>
+                <p>{{ match.user.profile.headline|default:match.user.profile.get_role_display|default:"SkillSphere Member" }}</p>
+                <small>{{ match.quality }}</small>
+            </div>
+        </div>
+        <div class="match-badge-row match-card-badges">
+            <span class="match-score-pill {% if match.score >= 80 %}score-high{% elif match.score >= 50 %}score-medium{% else %}score-low{% endif %}">
+                {{ match.score }}% Match
+            </span>
+        </div>
+    </div>
+
+    <div class="match-skill-summary">
+        <section>
+            <div class="match-skill-heading">
+                <span>Can Teach</span>
+            </div>
+            <div class="match-chip-row">
+                {% if match.teach_skills %}
+                    {% for skill in match.teach_skills %}
+                        <span class="match-skill-chip skill-chip">{{ skill.title }}</span>
+                    {% endfor %}
+                {% else %}
+                    <span class="match-skill-chip skill-chip muted">Not added</span>
+                {% endif %}
+            </div>
+        </section>
+
+        <section>
+            <div class="match-skill-heading">
+                <span>Wants to Learn</span>
+            </div>
+            <div class="match-chip-row">
+                {% if match.learn_skills %}
+                    {% for skill in match.learn_skills %}
+                        <span class="match-skill-chip skill-chip">{{ skill.title }}</span>
+                    {% endfor %}
+                {% else %}
+                    <span class="match-skill-chip skill-chip muted">Not added</span>
+                {% endif %}
+            </div>
+        </section>
+    </div>
+
+    <div class="match-card-meta">
+        <span>Rating</span>
+        {% if match.average_rating %}
+            <strong class="match-rating-summary">
+                <span>&#9733;</span>{{ match.average_rating|floatformat:1 }}/5
+                <small>({{ match.rating_count }})</small>
+            </strong>
+        {% else %}
+            <strong>Not rated yet</strong>
+        {% endif %}
+    </div>
+
+    <div class="match-actions">
+        <a class="btn match-btn-secondary" href="{% url 'matching:detail' match.user.pk %}">View Profile</a>
+        {% if match.request_state.status == "accepted" %}
+            <a class="btn match-btn-primary" href="{% url 'matching:exchanges' %}">Exchange Active</a>
+        {% elif match.request_state.status == "pending" %}
+            <button class="btn match-btn-primary match-btn-disabled" type="button" disabled>Request Sent</button>
+        {% else %}
+            <form action="{% url 'matching:send_request' match.user.pk %}" method="post">
+                {% csrf_token %}
+                <button class="btn match-btn-primary" type="submit">Send Request</button>
+            </form>
+        {% endif %}
+    </div>
+</article>

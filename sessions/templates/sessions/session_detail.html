@@ -1,0 +1,146 @@
+{% extends "dashboard_base.html" %}
+
+{% block title %}{{ session.title }} | SkillSphere{% endblock %}
+{% block dashboard_section %}Sessions{% endblock %}
+{% block dashboard_heading %}{{ session.title }}{% endblock %}
+{% block dashboard_subtitle %}<p class="topbar-subtitle">Session with {{ partner.profile.full_name|default:partner.username }}</p>{% endblock %}
+
+{% block dashboard_content %}
+<section class="section session-system-page">
+    <div class="session-detail-layout">
+        <article class="session-detail-card">
+            <div class="session-card-top">
+                <div>
+                    <p class="section-label">{{ session.get_format_display }}</p>
+                    <h2>{{ session.title }}</h2>
+                    <p>{{ session.description|default:"No description added." }}</p>
+                </div>
+                <span class="session-status status-{{ session.status }}">{{ session.get_status_display }}</span>
+            </div>
+
+            <div class="session-status-panel">
+                <div class="session-status-step {% if session.status == 'scheduled' %}active{% endif %}">
+                    <span>Scheduled</span>
+                    <strong>{{ session.scheduled_date|date:"M d, Y" }} at {{ session.scheduled_time|time:"h:i A" }}</strong>
+                </div>
+                <div class="session-status-step {% if session.status == 'in_progress' %}active{% endif %}">
+                    <span>In Progress</span>
+                    <strong>{% if session.status == 'in_progress' %}Currently active{% else %}Not active{% endif %}</strong>
+                </div>
+                <div class="session-status-step {% if session.status == 'completed' %}active completed{% endif %}">
+                    <span>Completed</span>
+                    <strong>{% if session.completed_at %}{{ session.completed_at|date:"M d, Y, h:i A" }}{% else %}Not completed{% endif %}</strong>
+                </div>
+                <div class="session-status-step {% if session.status == 'cancelled' %}active cancelled{% endif %}">
+                    <span>Cancelled</span>
+                    <strong>{% if session.status == 'cancelled' %}Cancelled{% else %}Not cancelled{% endif %}</strong>
+                </div>
+            </div>
+
+            <div class="session-meta-grid detail">
+                <div><span>Mentor</span><strong>{{ session.mentor.profile.full_name|default:session.mentor.username }}</strong></div>
+                <div><span>Learner</span><strong>{{ session.learner.profile.full_name|default:session.learner.username }}</strong></div>
+                <div><span>Date</span><strong>{{ session.scheduled_date|date:"M d, Y" }}</strong></div>
+                <div><span>Time</span><strong>{{ session.scheduled_time|time:"h:i A" }}</strong></div>
+                <div><span>Duration</span><strong>{{ session.duration_minutes }} min</strong></div>
+                <div><span>Format</span><strong>{{ session.get_format_display }}</strong></div>
+            </div>
+
+            {% if session.location or session.meeting_link %}
+                <div class="session-detail-block">
+                    <h3>Location or meeting</h3>
+                    {% if session.location %}<p>{{ session.location }}</p>{% endif %}
+                    {% if session.meeting_link %}<a class="btn btn-primary" href="{{ session.meeting_link }}" target="_blank" rel="noopener">Join Meeting</a>{% endif %}
+                </div>
+            {% endif %}
+
+            {% if session.status == "completed" %}
+                <div class="session-detail-block">
+                    <div class="session-complete-heading">
+                        <h3>Completion summary</h3>
+                        <span class="session-status status-completed">Completed</span>
+                    </div>
+                    <p>{{ session.notes|default:"No notes added." }}</p>
+                    <div class="session-meta-grid detail">
+                        <div><span>Completed at</span><strong>{{ session.completed_at|date:"M d, Y, h:i A"|default:"Not recorded" }}</strong></div>
+                        <div><span>Attendance</span><strong>Mentor: {{ session.mentor_attendance|yesno:"Yes,No" }} - Learner: {{ session.learner_attendance|yesno:"Yes,No" }}</strong></div>
+                        <div><span>Topics covered</span><strong>{{ session.topics_covered|default:"Not added" }}</strong></div>
+                        <div><span>Session notes</span><strong>{{ session.notes|default:"Not added" }}</strong></div>
+                        <div><span>Shared resources</span><strong>{{ session.shared_resources|default:"Not added" }}</strong></div>
+                        <div><span>Assignments</span><strong>{{ session.assignments|default:"Not added" }}</strong></div>
+                        <div><span>Hours taught</span><strong>{{ session.hours_taught|floatformat:2 }}</strong></div>
+                        <div><span>Hours learned</span><strong>{{ session.hours_learned|floatformat:2 }}</strong></div>
+                        <div>
+                            <span>Feedback status</span>
+                            <strong>
+                                {% if feedback_count == 2 %}
+                                    Both feedbacks completed
+                                {% elif feedback_given %}
+                                    Feedback submitted
+                                {% else %}
+                                    Waiting for your feedback
+                                {% endif %}
+                            </strong>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="session-detail-block session-feedback-section">
+                    <div class="session-complete-heading">
+                        <h3>Session feedback</h3>
+                        <a class="session-feedback-link" href="{% url 'ratings' %}">View all ratings</a>
+                    </div>
+                    <div class="session-feedback-grid">
+                        <article class="session-feedback-card">
+                            <div class="feedback-card-heading">
+                                <span>YF</span>
+                                <div>
+                                    <h4>Your Feedback</h4>
+                                    <p>Feedback you submitted for this session.</p>
+                                </div>
+                            </div>
+                            {% include "sessions/feedback_display.html" with feedback=your_feedback %}
+                        </article>
+                        <article class="session-feedback-card">
+                            <div class="feedback-card-heading">
+                                <span>PF</span>
+                                <div>
+                                    <h4>Partner Feedback</h4>
+                                    <p>Feedback submitted by {{ partner.profile.full_name|default:partner.username }}.</p>
+                                </div>
+                            </div>
+                            {% include "sessions/feedback_display.html" with feedback=partner_feedback %}
+                        </article>
+                    </div>
+                </div>
+            {% endif %}
+        </article>
+
+        <aside class="session-side-card">
+            <h2>Actions</h2>
+            <div class="stacked-actions">
+                <a class="btn btn-outline full-width" href="{% url 'sessions:list' %}">All Sessions</a>
+                {% if session.status == "scheduled" or session.status == "in_progress" %}
+                    <a class="btn btn-primary full-width" href="{% url 'sessions:edit' session.pk %}">Edit Session</a>
+                    {% if session.mentor == request.user %}
+                        <a class="btn btn-primary full-width" href="{% url 'sessions:complete' session.pk %}">Mark Complete</a>
+                    {% endif %}
+                    <form action="{% url 'sessions:cancel' session.pk %}" method="post">
+                        {% csrf_token %}
+                        <button class="btn btn-outline full-width danger-outline" type="submit">Cancel Session</button>
+                    </form>
+                {% endif %}
+                {% if session.status == "completed" %}
+                    {% if feedback_count == 2 %}
+                        <div class="session-feedback-state">Both feedbacks completed</div>
+                    {% elif feedback_given %}
+                        <div class="session-feedback-state">Feedback submitted</div>
+                    {% else %}
+                        <a class="btn btn-primary full-width" href="{% url 'sessions:feedback' session.pk %}">Leave Feedback</a>
+                    {% endif %}
+                {% endif %}
+            </div>
+        </aside>
+    </div>
+</section>
+{% endblock %}

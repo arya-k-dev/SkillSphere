@@ -1,0 +1,53 @@
+{% extends "dashboard_base.html" %}
+
+{% block title %}Profile | SkillSphere{% endblock %}
+{% block dashboard_section %}Profile{% endblock %}
+{% block dashboard_heading %}{{ profile.full_name|default:request.user.get_full_name|default:request.user.username }}{% endblock %}
+{% block dashboard_subtitle %}<p class="topbar-subtitle">{{ profile.headline|default:"A SkillSphere member preparing to exchange knowledge." }}</p>{% endblock %}
+
+{% block dashboard_content %}
+<section class="section">
+    <div class="container profile-layout">
+        <aside class="profile-card">
+            {% with display_name=profile.full_name|default:request.user.get_full_name|default:request.user.username %}
+                <div class="avatar">{{ display_name|first|upper }}</div>
+                <h2>{{ display_name }}</h2>
+            {% endwith %}
+            <p>{{ profile.get_role_display }}</p>
+            <a class="btn btn-primary full-width" href="{% url 'accounts:profile_edit' %}">Edit Profile</a>
+        </aside>
+        <article class="profile-details">
+            <div>
+                <p class="section-label">About</p>
+                <p>{{ profile.bio|default:"No bio added yet." }}</p>
+            </div>
+            <div class="detail-grid">
+                <div>
+                    <span>Email</span>
+                    <p>{{ request.user.email|default:"Not added" }}</p>
+                </div>
+                <div>
+                    <span>Location</span>
+                    <p>{{ profile.location|default:"Not added" }}</p>
+                </div>
+                <div>
+                    <span>Availability</span>
+                    <p>{{ profile.availability|default:"Not added" }}</p>
+                </div>
+                <div>
+                    <span>Learning goal</span>
+                    <p>{{ profile.learning_goal|default:"Not added" }}</p>
+                </div>
+                <div>
+                    <span>Username</span>
+                    <p>{{ request.user.username }}</p>
+                </div>
+                <div>
+                    <span>Updated</span>
+                    <p>{{ profile.updated_at|date:"M d, Y" }}</p>
+                </div>
+            </div>
+        </article>
+    </div>
+</section>
+{% endblock %}

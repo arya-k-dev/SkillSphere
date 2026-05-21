@@ -1,0 +1,67 @@
+{% extends "dashboard_base.html" %}
+
+{% block title %}Ratings | SkillSphere{% endblock %}
+{% block dashboard_section %}Ratings{% endblock %}
+{% block dashboard_heading %}Ratings{% endblock %}
+{% block dashboard_subtitle %}<p class="topbar-subtitle">Review feedback you received and feedback you shared after completed sessions.</p>{% endblock %}
+
+{% block dashboard_content %}
+<section class="section ratings-page">
+    <div class="ratings-shell">
+        <nav class="ratings-tabs" aria-label="Rating filters">
+            <a class="{% if active_tab == 'received' %}active{% endif %}" href="{% url 'ratings' %}?tab=received">Ratings Received</a>
+            <a class="{% if active_tab == 'given' %}active{% endif %}" href="{% url 'ratings' %}?tab=given">Ratings Given</a>
+        </nav>
+
+        {% if active_tab == "given" %}
+            {% if ratings_given %}
+                <div class="ratings-grid">
+                    {% for feedback in ratings_given %}
+                        <article class="rating-card reveal">
+                            <div class="rating-card-top">
+                                <div>
+                                    <p class="section-label">Rating Given</p>
+                                    <h2>{{ feedback.session.title }}</h2>
+                                    <p>For {{ feedback.partner.profile.full_name|default:feedback.partner.username }}</p>
+                                </div>
+                                <span class="session-status status-completed">Submitted</span>
+                            </div>
+                            {% include "sessions/feedback_display.html" with feedback=feedback %}
+                            <a class="btn btn-outline" href="{% url 'sessions:detail' feedback.session.pk %}">Open Session</a>
+                        </article>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="dashboard-empty message-empty">
+                    <strong>No ratings given yet</strong>
+                    <p>Feedback you submit after completed sessions will appear here.</p>
+                </div>
+            {% endif %}
+        {% else %}
+            {% if ratings_received %}
+                <div class="ratings-grid">
+                    {% for feedback in ratings_received %}
+                        <article class="rating-card reveal">
+                            <div class="rating-card-top">
+                                <div>
+                                    <p class="section-label">Rating Received</p>
+                                    <h2>{{ feedback.session.title }}</h2>
+                                    <p>From {{ feedback.given_by.profile.full_name|default:feedback.given_by.username }}</p>
+                                </div>
+                                <span class="session-status status-completed">Received</span>
+                            </div>
+                            {% include "sessions/feedback_display.html" with feedback=feedback %}
+                            <a class="btn btn-outline" href="{% url 'sessions:detail' feedback.session.pk %}">Open Session</a>
+                        </article>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="dashboard-empty message-empty">
+                    <strong>No ratings received yet</strong>
+                    <p>Feedback from your completed session partners will appear here.</p>
+                </div>
+            {% endif %}
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

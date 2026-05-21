@@ -1,0 +1,32 @@
+{% extends "dashboard_base.html" %}
+
+{% block title %}Edit Profile | SkillSphere{% endblock %}
+{% block dashboard_section %}Settings{% endblock %}
+{% block dashboard_heading %}Create your learning profile{% endblock %}
+{% block dashboard_subtitle %}<p class="topbar-subtitle">Introduce yourself with only the essentials for now.</p>{% endblock %}
+
+{% block dashboard_content %}
+<section class="section">
+    <div class="container narrow-container">
+        <form method="post" class="form-card elevated-form">
+            {% csrf_token %}
+            {% for field in form %}
+                <div class="form-group">
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field }}
+                    {% if field.help_text %}
+                        <p class="help-text">{{ field.help_text }}</p>
+                    {% endif %}
+                    {% for error in field.errors %}
+                        <p class="field-error">{{ error }}</p>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+            <div class="button-row">
+                <button class="btn btn-primary" type="submit">Save Profile</button>
+                <a class="btn btn-outline" href="{% url 'accounts:profile' %}">Cancel</a>
+            </div>
+        </form>
+    </div>
+</section>
+{% endblock %}

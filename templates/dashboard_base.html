@@ -1,0 +1,100 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}SkillSphere{% endblock %}</title>
+    <link rel="icon" type="image/svg+xml" href="{% static 'images/skillsphere-favicon-v2.svg' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=skillsphere-topbar-bell-20260521">
+</head>
+<body class="dashboard-shell-page">
+    {% with app=request.resolver_match.app_name name=request.resolver_match.url_name %}
+    <div class="dashboard-shell">
+        <input class="dashboard-menu-check" type="checkbox" id="dashboard-menu">
+        <label class="dashboard-overlay" for="dashboard-menu" aria-label="Close dashboard navigation"></label>
+
+        <aside class="dashboard-sidebar" aria-label="Dashboard navigation">
+            <div class="sidebar-brand">
+                <a href="{% url 'core:dashboard' %}" class="logo-wordmark sidebar-logo" aria-label="SkillSphere dashboard">
+                    <img class="brand-mark" src="{% static 'images/skillsphere-exchange-logo-v2.svg' %}" alt="" aria-hidden="true">
+                    <span class="logo-text"><span class="logo-skill">Skill</span><span class="logo-sphere">Sphere</span></span>
+                </a>
+            </div>
+            <nav class="sidebar-nav">
+                <a class="sidebar-item {% if app == 'core' and name == 'dashboard' %}active{% endif %}" href="{% url 'core:dashboard' %}"><svg class="sidebar-icon" aria-hidden="true" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"></rect><rect x="14" y="3" width="7" height="7" rx="1.5"></rect><rect x="3" y="14" width="7" height="7" rx="1.5"></rect><rect x="14" y="14" width="7" height="7" rx="1.5"></rect></svg>Dashboard</a>
+                <a class="sidebar-item {% if app == 'skills' and name == 'my_skills' or app == 'skills' and name == 'add' or app == 'skills' and name == 'edit' or app == 'skills' and name == 'delete' %}active{% endif %}" href="{% url 'skills:my_skills' %}"><svg class="sidebar-icon" aria-hidden="true" viewBox="0 0 24 24"><path d="m12 2 9 5-9 5-9-5 9-5Z"></path><path d="m3 12 9 5 9-5"></path><path d="m3 17 9 5 9-5"></path></svg>My Skills</a>
+                <a class="sidebar-item {% if app == 'matching' and name == 'recommended' or app == 'matching' and name == 'detail' %}active{% endif %}" href="{% url 'matching:recommended' %}"><svg class="sidebar-icon" aria-hidden="true" viewBox="0 0 24 24"><path d="m11 17 2 2a3 3 0 0 0 4.24 0l2.59-2.59a3 3 0 0 0 0-4.24L18 10.34"></path><path d="m13 7-2-2a3 3 0 0 0-4.24 0L4.17 7.59a3 3 0 0 0 0 4.24L6 13.66"></path><path d="m8 15 7-7"></path></svg>Matches</a>
+                <a class="sidebar-item {% if app == 'matching' and name == 'requests' or name == 'requests_list' %}active{% endif %}" href="{% url 'requests_list' %}"><svg class="sidebar-icon" aria-hidden="true" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"></rect><path d="M3 13h4l2 3h6l2-3h4"></path></svg>Requests</a>
+                <a class="sidebar-item {% if app == 'matching' and name == 'exchanges' %}active{% endif %}" href="{% url 'matching:exchanges' %}"><svg class="sidebar-icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M21 12a9 9 0 0 1-15.5 6.2L3 16"></path><path d="M3 16v5h5"></path><path d="M3 12A9 9 0 0 1 18.5 5.8L21 8"></path><path d="M21 8V3h-5"></path></svg>My Exchanges</a>
+                <a class="sidebar-item {% if app == 'messaging' %}active{% endif %}" href="{% url 'messaging:inbox' %}"><svg class="sidebar-icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M21 15a4 4 0 0 1-4 4H8l-5 3V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4z"></path></svg>Messages</a>
+                <a class="sidebar-item {% if app == 'sessions' %}active{% endif %}" href="{% url 'sessions:list' %}"><svg class="sidebar-icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M8 2v4"></path><path d="M16 2v4"></path><rect x="3" y="4" width="18" height="18" rx="2"></rect><path d="M3 10h18"></path><path d="M8 14h.01"></path><path d="M12 14h.01"></path><path d="M16 14h.01"></path><path d="M8 18h.01"></path><path d="M12 18h.01"></path></svg>Sessions</a>
+                <a class="sidebar-item {% if name == 'ratings' %}active{% endif %}" href="{% url 'ratings' %}"><svg class="sidebar-icon" aria-hidden="true" viewBox="0 0 24 24"><path d="m12 3 2.8 5.68 6.27.91-4.54 4.42 1.07 6.24L12 17.3l-5.6 2.95 1.07-6.24-4.54-4.42 6.27-.91L12 3Z"></path></svg>Ratings</a>
+                <a class="sidebar-item {% if app == 'engagement' and name == 'achievements' %}active{% endif %}" href="{% url 'engagement:achievements' %}"><svg class="sidebar-icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M7.2 14.8 5 22l7-4 7 4-2.2-7.2"></path><circle cx="12" cy="8" r="6"></circle></svg>Achievements</a>
+                <a class="sidebar-item {% if app == 'engagement' and name == 'certificates' or app == 'engagement' and name == 'certificate_detail' %}active{% endif %}" href="{% url 'engagement:certificates' %}"><svg class="sidebar-icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M7.5 4.2 12 2l4.5 2.2 5 1.1-1.1 5L22 15l-4.2 2.5L15 22l-3-2-3 2-2.8-4.5L2 15l1.6-4.7-1.1-5 5-1.1Z"></path><path d="m9 12 2 2 4-4"></path></svg>Certificates</a>
+                <a class="sidebar-item {% if name == 'notifications' %}active{% endif %} sidebar-notification-link" href="{% url 'notifications' %}">
+                    <svg class="sidebar-icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"></path><path d="M10 21h4"></path></svg>Notifications
+                    {% if unread_notifications_count %}
+                        <b class="sidebar-notification-badge">{{ unread_notifications_count }}</b>
+                    {% endif %}
+                </a>
+                <a class="sidebar-item {% if app == 'accounts' and name == 'profile' %}active{% endif %}" href="{% url 'accounts:profile' %}"><svg class="sidebar-icon" aria-hidden="true" viewBox="0 0 24 24"><circle cx="12" cy="8" r="5"></circle><path d="M20 21a8 8 0 0 0-16 0"></path></svg>Profile</a>
+            </nav>
+            <form class="sidebar-logout" action="{% url 'accounts:logout' %}" method="post">
+                {% csrf_token %}
+                <button class="sidebar-item" type="submit"><svg class="sidebar-icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><path d="M16 17l5-5-5-5"></path><path d="M21 12H9"></path></svg>Logout</button>
+            </form>
+        </aside>
+
+        <main class="dashboard-main">
+            <header class="dashboard-topbar page-header-card">
+                <div class="topbar-title">
+                    <label class="dashboard-menu-button" for="dashboard-menu" aria-label="Toggle dashboard navigation">
+                        <span></span><span></span><span></span>
+                    </label>
+                    <div class="topbar-copy">
+                        <h1>{% block dashboard_heading %}Dashboard{% endblock %}</h1>
+                        {% block dashboard_subtitle %}{% endblock %}
+                        {% block dashboard_actions %}{% endblock %}
+                    </div>
+                </div>
+                <div class="topbar-actions">
+                    <form class="dashboard-search" action="{% url 'core:global_search' %}" method="get">
+                        <input type="search" name="q" value="{{ query|default:'' }}" placeholder="Search skills, users, sessions, or requests">
+                    </form>
+                    <a class="icon-button topbar-notification-button" href="{% url 'notifications' %}" aria-label="Notifications">
+                        <svg class="topbar-notification-icon" aria-hidden="true" viewBox="0 0 24 24">
+                            <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"></path>
+                            <path d="M10 21h4"></path>
+                        </svg>
+                        {% if unread_notifications_count %}
+                            <span class="topbar-notification-badge">{{ unread_notifications_count }}</span>
+                        {% endif %}
+                    </a>
+                    {% with display_name=request.user.profile.full_name|default:request.user.get_full_name|default:request.user.username %}
+                        <a class="topbar-profile" href="{% url 'accounts:profile' %}" aria-label="Open profile">
+                            <span>{{ display_name|first|upper }}</span>
+                            <strong>{{ display_name }}</strong>
+                        </a>
+                    {% endwith %}
+                </div>
+            </header>
+
+            {% if messages %}
+                <div class="dashboard-messages">
+                    {% for message in messages %}
+                        <div class="message {{ message.tags }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <div class="dashboard-app-content">
+                {% block dashboard_content %}{% endblock %}
+            </div>
+        </main>
+    </div>
+    {% endwith %}
+    <script src="{% static 'js/animations.js' %}?v=skillsphere-scroll-reveal-20260520"></script>
+</body>
+</html>

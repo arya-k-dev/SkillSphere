@@ -1,0 +1,94 @@
+{% extends "dashboard_base.html" %}
+
+{% block title %}Achievements | SkillSphere{% endblock %}
+{% block dashboard_heading %}Achievements{% endblock %}
+{% block dashboard_subtitle %}<p class="topbar-subtitle">Track badge progress and celebrate your learning milestones.</p>{% endblock %}
+
+{% block dashboard_content %}
+<section class="engagement-page">
+    <div class="engagement-page-head">
+        <div>
+            <p class="section-label">Badges</p>
+            <h2>Your SkillSphere achievements</h2>
+        </div>
+        <span>{{ unlocked|length }} unlocked</span>
+    </div>
+
+    <div class="achievement-stats-grid">
+        <article class="engagement-card achievement-stat-card reveal reveal-delay-1"><strong>{{ achievement_stats.certificates_earned }}</strong><span>Certificates Earned</span></article>
+        <article class="engagement-card achievement-stat-card reveal reveal-delay-2"><strong>{{ achievement_stats.badges_collected }}</strong><span>Badges Collected</span></article>
+        <article class="engagement-card achievement-stat-card reveal reveal-delay-3"><strong>{{ achievement_stats.hours_taught|floatformat:1 }}</strong><span>Hours Taught</span></article>
+        <article class="engagement-card achievement-stat-card reveal reveal-delay-4"><strong>{{ achievement_stats.hours_learned|floatformat:1 }}</strong><span>Hours Learned</span></article>
+        <article class="engagement-card achievement-stat-card reveal reveal-delay-1"><strong>{{ achievement_stats.average_rating|floatformat:1 }}</strong><span>Average Rating</span></article>
+    </div>
+
+    <div class="achievement-workflow">
+        <article class="workflow-card reveal reveal-delay-1"><span>1</span><strong>Exchange Completed</strong></article>
+        <article class="workflow-card reveal reveal-delay-2"><span>2</span><strong>Feedback Given</strong></article>
+        <article class="workflow-card reveal reveal-delay-3"><span>3</span><strong>Certificate Generated</strong></article>
+        <article class="workflow-card reveal reveal-delay-4"><span>4</span><strong>Badges Awarded</strong></article>
+        <article class="workflow-card reveal reveal-delay-1"><span>5</span><strong>User Celebrates</strong></article>
+    </div>
+
+    <div class="badge-sections">
+        {% for section in badge_sections %}
+            <section class="badge-section" aria-labelledby="badge-section-{{ forloop.counter }}">
+                <h3 id="badge-section-{{ forloop.counter }}">{{ section.title }}</h3>
+                <div class="achievement-page-grid">
+                    {% for item in section.items %}
+                        <article class="engagement-card achievement-progress-card reveal {% if item.unlocked %}is-unlocked{% else %}is-locked{% endif %}">
+                            <div class="achievement-card-top">
+                                <span class="achievement-icon" aria-hidden="true">
+                                    {% if item.achievement.code == "helpful_mentor" %}
+                                        <i class="fa-solid fa-user-graduate"></i>
+                                    {% elif item.achievement.code == "skill_sharer" %}
+                                        <i class="fa-solid fa-layer-group"></i>
+                                    {% elif item.achievement.code == "top_rated" %}
+                                        <i class="fa-solid fa-trophy"></i>
+                                    {% elif item.achievement.name == "Session Expert" %}
+                                        <i class="fa-solid fa-trophy"></i>
+                                    {% elif item.achievement.code == "first_session_completed" %}
+                                        <i class="fa-solid fa-award"></i>
+                                    {% elif item.achievement.name == "Quick Learner" or item.achievement.code == "active_learner" %}
+                                        <i class="fa-solid fa-bolt"></i>
+                                    {% elif item.achievement.code == "community_star" %}
+                                        <i class="fa-solid fa-star"></i>
+                                    {% elif item.achievement.code == "first_skill_added" %}
+                                        <i class="fa-solid fa-book-open"></i>
+                                    {% elif item.achievement.code == "first_exchange_accepted" %}
+                                        <i class="fa-solid fa-handshake"></i>
+                                    {% else %}
+                                        <i class="fa-solid fa-medal"></i>
+                                    {% endif %}
+                                </span>
+                                <div>
+                                    <h4>{{ item.achievement.name }}</h4>
+                                    <p>{{ item.achievement.description }}</p>
+                                </div>
+                                {% if item.unlocked %}
+                                    <b class="badge-check" aria-label="Earned"><i class="fa-solid fa-check" aria-hidden="true"></i></b>
+                                {% endif %}
+                            </div>
+                            <div class="achievement-progress-meta">
+                                <strong>{% if item.unlocked %}Earned{% else %}Locked{% endif %}</strong>
+                                <small>{{ item.progress_text }}</small>
+                            </div>
+                            <div class="engagement-progress-track" aria-hidden="true">
+                                <span style="width: {{ item.progress_percent }}%;"></span>
+                            </div>
+                            <div class="achievement-card-footer">
+                                <span>{{ item.achievement.points }} points</span>
+                                {% if item.unlocked_at %}
+                                    <time>Unlocked {{ item.unlocked_at|date:"M d, Y" }}</time>
+                                {% else %}
+                                    <time>{{ item.progress_percent }}% complete</time>
+                                {% endif %}
+                            </div>
+                        </article>
+                    {% endfor %}
+                </div>
+            </section>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}

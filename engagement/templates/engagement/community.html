@@ -1,0 +1,66 @@
+{% extends "dashboard_base.html" %}
+
+{% block title %}Community | SkillSphere{% endblock %}
+{% block dashboard_heading %}Community{% endblock %}
+{% block dashboard_subtitle %}<p class="topbar-subtitle">Discover learners, mentors, completed exchanges, and popular skills.</p>{% endblock %}
+
+{% block dashboard_content %}
+<section class="engagement-page">
+    <div class="community-stats-grid">
+        <article class="engagement-card"><strong>{{ stats.total_users }}</strong><span>Total Users</span></article>
+        <article class="engagement-card"><strong>{{ stats.total_skills }}</strong><span>Total Skills</span></article>
+        <article class="engagement-card"><strong>{{ stats.completed_sessions }}</strong><span>Completed Sessions</span></article>
+        <article class="engagement-card"><strong>{{ stats.completed_exchanges }}</strong><span>Completed Exchanges</span></article>
+        <article class="engagement-card"><strong>{{ stats.average_rating|floatformat:1 }}</strong><span>Average Rating</span></article>
+    </div>
+
+    <div class="community-grid">
+        <article class="engagement-card">
+            <h2>Featured Learners</h2>
+            <div class="community-list">
+                {% for learner in featured_learners %}
+                    <a href="{% url 'matching:detail' learner.pk %}"><strong>{{ learner.profile.full_name|default:learner.username }}</strong><span>{{ learner.learn_count }} learning skills</span></a>
+                {% empty %}
+                    <p>No featured learners yet.</p>
+                {% endfor %}
+            </div>
+        </article>
+
+        <article class="engagement-card">
+            <h2>Top Mentors</h2>
+            <div class="community-list">
+                {% for row in top_mentors %}
+                    <a href="{% url 'matching:detail' row.user.pk %}"><strong>{{ row.user.profile.full_name|default:row.user.username }}</strong><span>{{ row.points }} points</span></a>
+                {% empty %}
+                    <p>No top mentors yet.</p>
+                {% endfor %}
+            </div>
+        </article>
+
+        <article class="engagement-card">
+            <h2>Recent Completed Exchanges</h2>
+            <div class="community-list">
+                {% for session in recent_completed_sessions %}
+                    <a href="{% url 'sessions:detail' session.pk %}">
+                        <strong>{{ session.title }}</strong>
+                        <span>{{ session.mentor.profile.full_name|default:session.mentor.username }} with {{ session.learner.profile.full_name|default:session.learner.username }}</span>
+                    </a>
+                {% empty %}
+                    <p>No completed sessions yet.</p>
+                {% endfor %}
+            </div>
+        </article>
+
+        <article class="engagement-card">
+            <h2>Popular Skills</h2>
+            <div class="popular-skill-cloud">
+                {% for skill in popular_skills %}
+                    <span>{{ skill.title }} <small>{{ skill.total }}</small></span>
+                {% empty %}
+                    <p>No popular skills yet.</p>
+                {% endfor %}
+            </div>
+        </article>
+    </div>
+</section>
+{% endblock %}

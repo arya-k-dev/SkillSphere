@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Login | SkillSphere{% endblock %}
+{% block body_class %}auth-page{% endblock %}
+
+{% block content %}
+<section class="auth-modern-section">
+    <div class="container auth-modern-grid login-grid">
+        <div class="auth-card-modern glass-card gradient-border-card">
+            <div class="logo-wordmark auth-brand-logo" aria-label="SkillSphere">
+                <img class="brand-mark" src="{% static 'images/skillsphere-exchange-logo-v2.svg' %}" alt="" aria-hidden="true">
+                <span class="logo-text"><span class="logo-skill">Skill</span><span class="logo-sphere">Sphere</span></span>
+            </div>
+            <p class="auth-kicker">Welcome back</p>
+            <h1>Welcome back to SkillSphere</h1>
+            <p class="auth-subtitle">Login to continue learning, teaching, and connecting with skill partners.</p>
+
+            <form method="post" class="auth-form-modern">
+                {% csrf_token %}
+                {% if form.non_field_errors %}
+                    <div class="form-errors">{{ form.non_field_errors }}</div>
+                {% endif %}
+                {% for field in form %}
+                    <div class="form-group">
+                        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                        {{ field }}
+                        {% for error in field.errors %}
+                            <p class="field-error">{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endfor %}
+                <button class="btn btn-primary full-width" type="submit">Login</button>
+            </form>
+            <p class="auth-switch">New to SkillSphere? <a href="{% url 'accounts:register' %}">Create an account</a></p>
+        </div>
+
+        <aside class="auth-info-panel app-card gradient-border-card">
+            <img src="{% static 'images/skillsphere-login-collaboration.png' %}" alt="SkillSphere online collaboration">
+            <div class="auth-info-content">
+                <p class="auth-kicker">Continue your learning journey</p>
+                <h2>Pick up exactly where your skill exchange left off.</h2>
+                <ul class="auth-benefit-list">
+                    <li>View recommendations</li>
+                    <li>Manage exchange requests</li>
+                    <li>Track progress and achievements</li>
+                </ul>
+            </div>
+        </aside>
+    </div>
+</section>
+{% endblock %}

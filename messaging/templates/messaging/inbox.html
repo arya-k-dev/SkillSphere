@@ -1,0 +1,44 @@
+{% extends "dashboard_base.html" %}
+
+{% block title %}Messages | SkillSphere{% endblock %}
+{% block dashboard_section %}Messages{% endblock %}
+{% block dashboard_heading %}Messages{% endblock %}
+{% block dashboard_subtitle %}<p class="topbar-subtitle">Continue conversations from your active exchanges.</p>{% endblock %}
+
+{% block dashboard_content %}
+<section class="section messages-section">
+    <div class="messages-shell">
+        {% if thread_cards %}
+            <div class="thread-list">
+                {% for card in thread_cards %}
+                    <a class="thread-card" href="{% url 'messaging:exchange_chat' card.thread.exchange.pk %}">
+                        <div class="thread-avatar">{{ card.partner.profile.full_name|default:card.partner.username|first|upper }}</div>
+                        <div class="thread-copy">
+                            <div class="thread-card-top">
+                                <h2>{{ card.partner.profile.full_name|default:card.partner.username }}</h2>
+                                <time>{{ card.thread.updated_at|date:"M d, h:i A" }}</time>
+                            </div>
+                            <p class="thread-skills">You teach: {{ card.summary.teach }} · You learn: {{ card.summary.learn }}</p>
+                            <p class="thread-preview">
+                                {% if card.last_message %}
+                                    {{ card.last_message.sender.profile.full_name|default:card.last_message.sender.username }}: {{ card.last_message.body|truncatechars:90 }}
+                                {% else %}
+                                    Start your exchange chat.
+                                {% endif %}
+                            </p>
+                        </div>
+                        {% if card.unread_count %}
+                            <span class="unread-pill">{{ card.unread_count }}</span>
+                        {% endif %}
+                    </a>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="dashboard-empty message-empty">
+                <strong>No active chats yet</strong>
+                <p>Accepted exchanges will open a message thread here.</p>
+            </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

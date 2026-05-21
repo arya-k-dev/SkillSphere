@@ -1,0 +1,312 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}SkillSphere | Exchange Skills and Grow Together{% endblock %}
+{% block body_class %}landing-page{% endblock %}
+
+{% block content %}
+<section class="landing-hero parallax-hero reveal" id="top">
+    <div class="container landing-hero-grid">
+        <div class="landing-hero-copy">
+            <p class="landing-kicker">SkillSphere</p>
+            <h1 class="hero-title">
+                Teach <span>What You Know.</span><br>
+                Learn <span>What Matters.</span><br>
+                Grow <span>Together.</span>
+            </h1>
+            <p class="landing-lede">
+                SkillSphere connects people who want to teach what they know and learn what they love through mutual skill exchange.
+            </p>
+            <div class="landing-actions">
+                <a class="btn btn-primary soft-glow" href="{% url 'accounts:register' %}">Get Started</a>
+                <a class="btn btn-soft" href="{% url 'skills:browse' %}">Explore Skills</a>
+            </div>
+            <div class="trust-badges" aria-label="Platform highlights">
+                <span>Free Learning</span>
+                <span>Smart Matching</span>
+                <span>Peer-to-Peer</span>
+                <span>Trusted Community</span>
+            </div>
+        </div>
+        <div class="hero-showcase hero-collage" aria-label="Skill exchange preview">
+            <div class="hero-blob hero-blob-primary"></div>
+            <div class="hero-blob hero-blob-secondary"></div>
+            <div class="hero-orbit hero-orbit-large"></div>
+            <div class="hero-orbit hero-orbit-small"></div>
+            <div class="hero-person hero-person-mentor">
+                <img class="hero-community-image" src="{% static 'images/skillsphere-hero-mentor.png' %}" alt="Mentor teaching a skill online">
+            </div>
+            <div class="hero-person hero-person-learner">
+                <img src="{% static 'images/skillsphere-hero-learner.png' %}" alt="Learner collaborating during a skill exchange">
+            </div>
+            <div class="hero-floating-card hero-floating-card-python">Python</div>
+            <div class="hero-floating-card hero-floating-card-design">UI/UX Design</div>
+            <div class="hero-floating-card hero-floating-card-match">Skill Match</div>
+        </div>
+    </div>
+</section>
+
+<section class="landing-section section-muted reveal" id="how-it-works">
+    <div class="container">
+        <div class="landing-section-heading">
+            <p class="landing-kicker">How SkillSphere Works</p>
+            <h2>From profile to learning partner in four simple steps.</h2>
+        </div>
+        <div class="step-grid landing-card-grid">
+            <article class="landing-card app-card gradient-border-card accent-left step-card-modern reveal reveal-delay-1">
+                <span>01</span>
+                <h3>Create Profile</h3>
+                <p>Add your skills, interests, and learning goals.</p>
+            </article>
+            <article class="landing-card app-card gradient-border-card accent-left step-card-modern reveal reveal-delay-2">
+                <span>02</span>
+                <h3>Get Smart Matches</h3>
+                <p>Find users whose skills and learning needs match yours.</p>
+            </article>
+            <article class="landing-card app-card gradient-border-card accent-left step-card-modern reveal reveal-delay-3">
+                <span>03</span>
+                <h3>Send Exchange Request</h3>
+                <p>Connect with a suitable partner and request a skill exchange.</p>
+            </article>
+            <article class="landing-card app-card gradient-border-card accent-left step-card-modern reveal reveal-delay-4">
+                <span>04</span>
+                <h3>Learn &amp; Teach Together</h3>
+                <p>Share knowledge, learn new skills, and grow together.</p>
+            </article>
+        </div>
+    </div>
+</section>
+
+<section class="landing-section reveal" id="categories">
+    <div class="container">
+        <div class="landing-section-heading split-heading">
+            <div>
+                <p class="landing-kicker">Popular Skill Categories</p>
+                <h2>Explore skill areas built for real peer exchange.</h2>
+            </div>
+            <a class="section-link" href="{% url 'skills:browse' %}">View Skills</a>
+        </div>
+        <div class="category-grid">
+            <article class="landing-card app-card gradient-border-card category-card reveal reveal-delay-1">
+                <span class="card-icon icon-badge">TC</span>
+                <h3>Technology</h3>
+                <p>Build practical digital confidence with community members.</p>
+                <small>Python, Web Apps, Data Basics</small>
+            </article>
+            <article class="landing-card app-card gradient-border-card category-card reveal reveal-delay-2">
+                <span class="card-icon icon-badge">CR</span>
+                <h3>Creative Skills</h3>
+                <p>Exchange feedback and techniques across visual projects.</p>
+                <small>UI/UX, Graphic Design, Video Editing</small>
+            </article>
+            <article class="landing-card app-card gradient-border-card category-card reveal reveal-delay-3">
+                <span class="card-icon icon-badge">LG</span>
+                <h3>Languages</h3>
+                <p>Practice conversation, writing, and fluency with partners.</p>
+                <small>Spoken English, Hindi, French</small>
+            </article>
+            <article class="landing-card app-card gradient-border-card category-card reveal reveal-delay-4">
+                <span class="card-icon icon-badge">CA</span>
+                <h3>Career Skills</h3>
+                <p>Grow professional readiness through guided exchanges.</p>
+                <small>Resume Building, Interviews, LinkedIn</small>
+            </article>
+            <article class="landing-card app-card gradient-border-card category-card reveal reveal-delay-1">
+                <span class="card-icon icon-badge">LS</span>
+                <h3>Lifestyle</h3>
+                <p>Share everyday skills that make learning feel personal.</p>
+                <small>Fitness, Cooking, Personal Finance</small>
+            </article>
+            <article class="landing-card app-card gradient-border-card category-card reveal reveal-delay-2">
+                <span class="card-icon icon-badge">AS</span>
+                <h3>Academic Support</h3>
+                <p>Find study partners for concepts, revision, and projects.</p>
+                <small>Math, Writing, Research Methods</small>
+            </article>
+        </div>
+    </div>
+</section>
+
+<section class="landing-section section-muted reveal" id="benefits">
+    <div class="container">
+        <div class="landing-section-heading">
+            <p class="landing-kicker">Why Choose SkillSphere</p>
+            <h2>A community-first way to learn without paid learning barriers.</h2>
+        </div>
+        <div class="benefit-grid">
+            <article class="landing-card app-card gradient-border-card benefit-card reveal reveal-delay-1"><span class="icon-badge">01</span><h3>Free Skill Exchange</h3><p>Trade knowledge directly with people who want to learn from you too.</p></article>
+            <article class="landing-card app-card gradient-border-card benefit-card reveal reveal-delay-2"><span class="icon-badge">02</span><h3>Smart Reciprocal Matching</h3><p>Discover partners where teaching and learning goals align both ways.</p></article>
+            <article class="landing-card app-card gradient-border-card benefit-card reveal reveal-delay-3"><span class="icon-badge">03</span><h3>Flexible Learning</h3><p>Coordinate sessions around your availability, pace, and goals.</p></article>
+            <article class="landing-card app-card gradient-border-card benefit-card reveal reveal-delay-4"><span class="icon-badge">04</span><h3>Verified Profiles</h3><p>Profile details help learners understand who they are connecting with.</p></article>
+            <article class="landing-card app-card gradient-border-card benefit-card reveal reveal-delay-1"><span class="icon-badge">05</span><h3>Ratings &amp; Reviews</h3><p>Community feedback helps build trust after successful exchanges.</p></article>
+            <article class="landing-card app-card gradient-border-card benefit-card reveal reveal-delay-2"><span class="icon-badge">06</span><h3>Progress &amp; Achievements</h3><p>Stay motivated with visible milestones as your skill journey grows.</p></article>
+        </div>
+    </div>
+</section>
+
+<section class="landing-section reveal" id="demo">
+    <div class="container">
+        <div class="landing-section-heading centered">
+            <p class="landing-kicker">Skill Exchange Demo</p>
+            <h2>When two goals complete each other, SkillSphere makes the connection clear.</h2>
+        </div>
+        <div class="exchange-demo">
+            <article class="exchange-user landing-card app-card gradient-border-card reveal reveal-delay-1">
+                <span>User A</span>
+                <h3>Can Teach: UI/UX Design</h3>
+                <p>Wants to Learn: Python</p>
+            </article>
+            <div class="exchange-center">
+                <span class="exchange-icon">SS</span>
+                <strong>Perfect Skill Match</strong>
+            </div>
+            <article class="exchange-user landing-card app-card gradient-border-card reveal reveal-delay-3">
+                <span>User B</span>
+                <h3>Can Teach: Python</h3>
+                <p>Wants to Learn: UI/UX Design</p>
+            </article>
+        </div>
+    </div>
+</section>
+
+<section class="landing-section section-muted reveal" id="trending">
+    <div class="container">
+        <div class="landing-section-heading split-heading">
+            <div>
+                <p class="landing-kicker">Trending Skills</p>
+                <h2>Skills learners are actively looking to exchange.</h2>
+            </div>
+            <a class="section-link" href="{% url 'skills:browse' %}">Browse Skills</a>
+        </div>
+        <div class="trending-grid">
+            <a class="landing-card app-card gradient-border-card trend-card reveal reveal-delay-1" href="{% url 'skills:public_detail' 'python' %}"><h3>Python Programming</h3><p>Automation, scripting, and beginner projects.</p></a>
+            <a class="landing-card app-card gradient-border-card trend-card reveal reveal-delay-2" href="{% url 'skills:public_detail' 'web-development' %}"><h3>Web Development</h3><p>HTML, CSS, Django, and responsive layouts.</p></a>
+            <a class="landing-card app-card gradient-border-card trend-card reveal reveal-delay-3" href="{% url 'skills:public_detail' 'spoken-english' %}"><h3>Spoken English</h3><p>Conversation practice and confidence building.</p></a>
+            <a class="landing-card app-card gradient-border-card trend-card reveal reveal-delay-4" href="{% url 'skills:public_detail' 'graphic-design' %}"><h3>Graphic Design</h3><p>Brand visuals, posters, and layout critique.</p></a>
+            <a class="landing-card app-card gradient-border-card trend-card reveal reveal-delay-1" href="{% url 'skills:public_detail' 'resume-building' %}"><h3>Resume Building</h3><p>Profile polish, formatting, and interview readiness.</p></a>
+            <a class="landing-card app-card gradient-border-card trend-card reveal reveal-delay-2" href="{% url 'skills:public_detail' 'ui-ux-design' %}"><h3>UI/UX Design</h3><p>Wireframes, prototypes, and product design feedback.</p></a>
+        </div>
+    </div>
+</section>
+
+<section class="landing-section reveal" id="testimonials">
+    <div class="container">
+        <div class="landing-section-heading">
+            <p class="landing-kicker">Session Feedback</p>
+            <h2>What Our Learners Say</h2>
+            <p>Real feedback from completed skill exchange sessions.</p>
+        </div>
+        {% if learner_stories %}
+            <div class="testimonial-grid">
+                {% for story in learner_stories %}
+                    <article class="landing-card app-card gradient-border-card testimonial-card feedback-testimonial-card reveal">
+                        <p>"{{ story.comment }}"</p>
+                        <h3>{{ story.reviewer }}</h3>
+                        <div class="testimonial-detail">
+                            <span>Exchanged:</span>
+                            <strong>{{ story.mentor_skill }} &#8596; {{ story.learner_skill }}</strong>
+                        </div>
+                        <div class="testimonial-detail">
+                            <span>Session:</span>
+                            <strong>{{ story.session_title }}</strong>
+                        </div>
+                        <span class="feedback-role-badge">{{ story.role }}</span>
+                        <strong class="testimonial-rating">
+                            {% for star in "12345" %}
+                                <span class="{% if forloop.counter <= story.rating %}filled{% endif %}">&#9733;</span>
+                            {% endfor %}
+                            {{ story.rating }}/5
+                        </strong>
+                    </article>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="landing-card testimonial-empty-state">
+                <p>No session feedback available yet. Complete a session to see learner stories here.</p>
+            </div>
+        {% endif %}
+    </div>
+</section>
+
+<section class="landing-section stats-band reveal" id="stats">
+    <div class="container stats-grid-modern">
+        <article class="stat-card-modern reveal reveal-delay-1"><strong class="counter" data-count="{{ homepage_stats.skills_listed|default:0 }}">{{ homepage_stats.skills_listed|default:0 }}+</strong><span>Skills Listed</span></article>
+        <article class="stat-card-modern reveal reveal-delay-2"><strong class="counter" data-count="{{ homepage_stats.active_users|default:0 }}">{{ homepage_stats.active_users|default:0 }}+</strong><span>Learners</span></article>
+        <article class="stat-card-modern reveal reveal-delay-3"><strong class="counter" data-count="{{ homepage_stats.skill_exchanges|default:0 }}">{{ homepage_stats.skill_exchanges|default:0 }}+</strong><span>Skill Exchanges</span></article>
+        <article class="stat-card-modern reveal reveal-delay-4"><strong class="counter" data-count="{{ homepage_stats.match_satisfaction|default:0 }}">{{ homepage_stats.match_satisfaction|default:0 }}%</strong><span>Match Satisfaction</span></article>
+    </div>
+</section>
+
+<section class="landing-section section-muted reveal" id="gamification">
+    <div class="container gamification-grid">
+        <div class="landing-section-heading">
+            <p class="landing-kicker">Gamification Preview</p>
+            <h2>Small wins keep the learning journey moving.</h2>
+        </div>
+        <div class="gamification-cards">
+            <article class="landing-card app-card gradient-border-card accent-left mini-feature reveal reveal-delay-1"><span class="icon-badge">01</span><h3>Skill Points</h3><p>Earn points as you teach, learn, and complete exchanges.</p></article>
+            <article class="landing-card app-card gradient-border-card accent-left mini-feature reveal reveal-delay-2"><span class="icon-badge">02</span><h3>Achievement Badges</h3><p>Celebrate milestones for consistency and community impact.</p></article>
+            <article class="landing-card app-card gradient-border-card accent-left mini-feature reveal reveal-delay-3"><span class="icon-badge">03</span><h3>Learning Streaks</h3><p>Track regular progress across your chosen skills.</p></article>
+            <article class="landing-card app-card gradient-border-card accent-left mini-feature reveal reveal-delay-4"><span class="icon-badge">04</span><h3>Leaderboard</h3><p>Recognize active community members and skill partners.</p></article>
+        </div>
+    </div>
+</section>
+
+<section class="landing-section reveal" id="faq">
+    <div class="container faq-layout">
+        <div class="landing-section-heading">
+            <p class="landing-kicker">FAQ</p>
+            <h2>Frequently Asked Questions</h2>
+        </div>
+        <div class="faq-list">
+            <details class="faq-item" open>
+                <summary>How does skill exchange work?</summary>
+                <p>You list what you can teach and what you want to learn. SkillSphere helps you find a partner with reciprocal goals.</p>
+            </details>
+            <details class="faq-item">
+                <summary>Is SkillSphere free?</summary>
+                <p>Yes. SkillSphere is designed around mutual skill exchange, not paid programs.</p>
+            </details>
+            <details class="faq-item">
+                <summary>How does matching work?</summary>
+                <p>Matching compares teachable skills, learning goals, categories, and profile signals to suggest suitable partners.</p>
+            </details>
+            <details class="faq-item">
+                <summary>Can I reject a request?</summary>
+                <p>Yes. You stay in control of the requests you accept, reject, or revisit later.</p>
+            </details>
+            <details class="faq-item">
+                <summary>How do ratings work?</summary>
+                <p>Ratings and reviews help the community understand exchange quality and build trust over time.</p>
+            </details>
+            <details class="faq-item">
+                <summary>Can I learn more than one skill?</summary>
+                <p>Yes. You can explore multiple skills and connect with different learning partners as your goals expand.</p>
+            </details>
+        </div>
+    </div>
+</section>
+
+<section class="landing-section final-cta reveal" id="start">
+    <div class="container final-cta-inner">
+        <p class="landing-kicker">Start Today</p>
+        <h2>Ready to Start Your Skill Exchange Journey?</h2>
+        <p>Join SkillSphere today and start learning without limits.</p>
+        <div class="landing-actions centered-actions">
+            <a class="btn btn-primary" href="{% url 'accounts:register' %}">Create Account</a>
+            <a class="btn btn-soft" href="{% url 'skills:browse' %}">Browse Skills</a>
+        </div>
+    </div>
+</section>
+
+<script>
+    document.querySelectorAll(".faq-item").forEach((item) => {
+        item.addEventListener("toggle", () => {
+            if (!item.open) return;
+            document.querySelectorAll(".faq-item").forEach((other) => {
+                if (other !== item) other.removeAttribute("open");
+            });
+        });
+    });
+</script>
+{% endblock %}
