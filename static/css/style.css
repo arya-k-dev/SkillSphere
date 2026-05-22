@@ -11077,6 +11077,78 @@ body,
     line-height: 1;
 }
 
+/* Dashboard Skill Progress alignment fix */
+.dashboard-shell-page .progress-card .analytics-progress-list {
+    display: grid;
+    gap: 12px;
+}
+
+.dashboard-shell-page .progress-card .analytics-progress-item {
+    position: static !important;
+    box-sizing: border-box;
+    min-width: 0;
+    min-height: 104px;
+    height: auto;
+    display: grid;
+    grid-template-rows: auto auto auto;
+    gap: 0;
+    align-content: start;
+    margin: 0;
+    overflow: hidden;
+    padding: 14px 16px;
+    border-radius: 18px;
+}
+
+.dashboard-shell-page .progress-card .progress-line-top {
+    position: static !important;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin: 0 0 10px;
+    transform: none !important;
+}
+
+.dashboard-shell-page .progress-card .progress-line-top strong {
+    min-width: 0;
+    margin: 0;
+    overflow: hidden;
+    color: #162033;
+    font-size: 1rem;
+    font-weight: 800;
+    line-height: 1.25;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.dashboard-shell-page .progress-card .progress-line-top span {
+    flex-shrink: 0;
+    color: #1D9E75;
+    font-size: 1.125rem;
+    font-weight: 800;
+    line-height: 1.2;
+    white-space: nowrap;
+}
+
+.dashboard-shell-page .progress-card .analytics-progress-track {
+    position: static !important;
+    width: 100%;
+    height: 8px;
+    margin: 8px 0 10px;
+    overflow: hidden;
+    transform: none !important;
+}
+
+.dashboard-shell-page .progress-card .analytics-progress-item p {
+    min-width: 0;
+    margin: 0;
+    overflow: hidden;
+    color: #64748B;
+    font-size: 0.875rem;
+    line-height: 1.35;
+}
+
 @media print {
     .dashboard-sidebar,
     .dashboard-topbar,
