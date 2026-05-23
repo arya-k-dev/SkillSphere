@@ -10,6 +10,7 @@ from skills.models import Skill
 from .models import Achievement, Certificate
 from .services import (
     completed_exchange_count,
+    display_name,
     ensure_certificates_for_user,
     evaluate_user_achievements,
     user_leaderboard_rows,
@@ -113,16 +114,69 @@ def certificates_page(request):
     return render(request, "engagement/certificates.html", {"certificates": certificates})
 
 
+def certificate_display_context(certificate):
+    mentor_name = certificate.mentor_name
+    learner_name = certificate.learner_name
+    if certificate.session_id:
+        mentor_name = mentor_name or display_name(certificate.session.mentor)
+        learner_name = learner_name or display_name(certificate.session.learner)
+
+    fallback_name = display_name(certificate.user)
+    skill_name = certificate.skill.title if certificate.skill_id else "this skill"
+
+    if certificate.certificate_type == Certificate.MENTOR:
+        mentor_name = mentor_name or fallback_name
+        learner_name = learner_name or "the learner"
+        issued_to_name = mentor_name
+        certificate_text = (
+            f"This certificate proudly recognizes {mentor_name} for successfully mentoring "
+            f"{learner_name} in {skill_name} through SkillSphere."
+        )
+    else:
+        learner_name = learner_name or fallback_name
+        mentor_name = mentor_name or "the mentor"
+        issued_to_name = learner_name
+        certificate_text = (
+            f"This certificate proudly recognizes {learner_name} for successfully completing "
+            f"{skill_name} through a SkillSphere skill exchange under the guidance of {mentor_name}."
+        )
+
+    return {
+        "issued_to_name": issued_to_name,
+        "mentor_name": mentor_name,
+        "learner_name": learner_name,
+        "skill_name": skill_name,
+        "certificate_text": certificate_text,
+    }
+
+
 @login_required
 def certificate_detail(request, certificate_id):
     ensure_certificates_for_user(request.user)
     certificate = get_object_or_404(
-        Certificate.objects.select_related("user", "user__profile", "skill", "session", "exchange"),
+        Certificate.objects.select_related(
+            "user",
+            "user__profile",
+            "skill",
+            "session",
+            "session__mentor",
+            "session__mentor__profile",
+            "session__learner",
+            "session__learner__profile",
+            "exchange",
+        ),
         pk=certificate_id,
         user=request.user,
         certificate_type__in=[Certificate.LEARNER, Certificate.MENTOR],
     )
-    return render(request, "engagement/certificate_detail.html", {"certificate": certificate})
+    return render(
+        request,
+        "engagement/certificate_detail.html",
+        {
+            "certificate": certificate,
+            "certificate_display": certificate_display_context(certificate),
+        },
+    )
 
 
 @login_required

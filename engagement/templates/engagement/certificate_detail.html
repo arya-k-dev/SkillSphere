@@ -31,31 +31,21 @@
                 </p>
                 <h2>{{ certificate.title }}</h2>
                 <p class="certificate-kicker">This certificate is proudly issued to</p>
-                <h1>{{ certificate.user.profile.full_name|default:certificate.user.username }}</h1>
-                {% if certificate.certificate_type == "learner_completion" %}
-                    <p class="certificate-role-text">
-                        This certifies that {{ certificate.learner_name|default:certificate.user.username }} successfully completed learning
-                        <strong>{{ certificate.skill.title|default:"this skill" }}</strong> through a SkillSphere skill exchange.
-                    </p>
-                {% elif certificate.certificate_type == "mentor_contribution" %}
-                    <p class="certificate-role-text">
-                        This certifies that {{ certificate.mentor_name|default:certificate.user.username }} successfully mentored and taught
-                        <strong>{{ certificate.skill.title|default:"this skill" }}</strong> through a SkillSphere skill exchange.
-                    </p>
-                {% endif %}
+                <h1>{{ certificate_display.issued_to_name }}</h1>
+                <p class="certificate-role-text">{{ certificate_display.certificate_text }}</p>
             </div>
 
-            <div class="certificate-info-grid">
-                <div><span>Skill Name</span><strong>{{ certificate.skill.title|default:"Skill exchange" }}</strong></div>
-                <div><span>Certificate Role</span><strong>{{ certificate.get_certificate_type_display }}</strong></div>
-                <div><span>{% if certificate.certificate_type == "mentor_contribution" %}Hours Taught{% else %}Hours Completed{% endif %}</span><strong>{{ certificate.hours_completed|floatformat:1 }}</strong></div>
-                <div><span>Mentor</span><strong>{{ certificate.mentor_name|default:"Not recorded" }}</strong></div>
-                <div><span>Learner</span><strong>{{ certificate.learner_name|default:"Not recorded" }}</strong></div>
-                <div><span>Rating</span><strong>{% if certificate.rating %}{{ certificate.rating|floatformat:1 }} / 5{% else %}Not rated{% endif %}</strong></div>
-                <div><span>{% if certificate.certificate_type == "mentor_contribution" %}Sessions Conducted{% else %}Sessions Completed{% endif %}</span><strong>{{ certificate.sessions_count|default:1 }}</strong></div>
-                <div><span>Issued Date</span><strong>{{ certificate.issued_date|date:"M d, Y" }}</strong></div>
-                <div><span>Verification Code</span><strong>{{ certificate.verification_code }}</strong></div>
-            </div>
+            <dl class="certificate-details">
+                <div><dt>Skill:</dt><dd>{{ certificate_display.skill_name }}</dd></div>
+                <div><dt>Learner:</dt><dd>{{ certificate_display.learner_name }}</dd></div>
+                <div><dt>Mentor:</dt><dd>{{ certificate_display.mentor_name }}</dd></div>
+                <div><dt>Role:</dt><dd>{{ certificate.get_certificate_type_display }}</dd></div>
+                <div><dt>{% if certificate.certificate_type == "mentor_contribution" %}Hours Taught:{% else %}Hours Completed:{% endif %}</dt><dd>{{ certificate.hours_completed|floatformat:1 }} Hours</dd></div>
+                <div><dt>{% if certificate.certificate_type == "mentor_contribution" %}Sessions Conducted:{% else %}Sessions Completed:{% endif %}</dt><dd>{{ certificate.sessions_count|default:1 }}</dd></div>
+                <div><dt>Performance Rating:</dt><dd>{% if certificate.rating %}{{ certificate.rating|floatformat:1 }} / 5{% else %}Not rated{% endif %}</dd></div>
+                <div><dt>Issue Date:</dt><dd>{{ certificate.issued_date|date:"M d, Y" }}</dd></div>
+                <div><dt>Verification ID:</dt><dd>{{ certificate.verification_code }}</dd></div>
+            </dl>
 
             <footer class="certificate-footer">
                 <div class="certificate-signature">

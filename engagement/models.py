@@ -52,7 +52,7 @@ class Certificate(models.Model):
 
     CERTIFICATE_TYPE_CHOICES = [
         (LEARNER, "Learner Completion"),
-        (MENTOR, "Mentor Contribution"),
+        (MENTOR, "Mentor Recognition"),
     ]
 
     certificate_id = models.CharField(max_length=40, unique=True, editable=False)

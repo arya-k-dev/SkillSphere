@@ -261,19 +261,30 @@ def ensure_certificates_for_user(user):
             exchange=role_session.exchange,
             certificate_type__in=[Certificate.LEARNER, Certificate.MENTOR],
         ).first()
-        if not existing_certificate:
+        certificate_defaults = {
+            "certificate_type": role,
+            "title": title,
+            "skill": skill,
+            "session": role_session,
+            "mentor_name": display_name(role_session.mentor),
+            "learner_name": display_name(role_session.learner),
+            "rating": certificate_average_rating(role_session),
+            "hours_completed": hours,
+            "sessions_count": sessions_count,
+        }
+        if existing_certificate:
+            changed_fields = []
+            for field, value in certificate_defaults.items():
+                if getattr(existing_certificate, field) != value:
+                    setattr(existing_certificate, field, value)
+                    changed_fields.append(field)
+            if changed_fields:
+                existing_certificate.save(update_fields=changed_fields)
+        else:
             Certificate.objects.create(
                 user=user,
                 exchange=role_session.exchange,
-                certificate_type=role,
-                title=title,
-                skill=skill,
-                session=role_session,
-                mentor_name=display_name(role_session.mentor),
-                learner_name=display_name(role_session.learner),
-                rating=certificate_average_rating(role_session),
-                hours_completed=hours,
-                sessions_count=sessions_count,
+                **certificate_defaults,
             )
 
     return Certificate.objects.filter(

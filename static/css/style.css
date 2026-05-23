@@ -3399,6 +3399,7 @@ select,
 }
 
 .hero-collage {
+    top: -45px;
     min-height: clamp(420px, 42vw, 560px);
     display: block;
     padding: 0;
@@ -3513,6 +3514,8 @@ select,
     font-weight: 800;
     box-shadow: 0 10px 24px rgba(31, 41, 55, 0.09);
     backdrop-filter: blur(12px);
+    animation: softFloat 4.4s ease-in-out infinite;
+    will-change: transform;
 }
 
 .hero-floating-card::before {
@@ -3527,16 +3530,29 @@ select,
 .hero-floating-card-python {
     left: 2%;
     top: 18%;
+    animation-delay: 0s;
 }
 
 .hero-floating-card-design {
     right: 4%;
     top: 37%;
+    animation-delay: 0.8s;
 }
 
 .hero-floating-card-match {
     left: 38%;
     bottom: 28%;
+    animation-delay: 1.4s;
+}
+
+@keyframes softFloat {
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-6px);
+    }
 }
 
 .landing-section {
@@ -4075,6 +4091,7 @@ select,
     }
 
     .hero-collage {
+        top: 0;
         width: min(100%, 560px);
         min-height: 480px;
         justify-self: center;
@@ -9603,30 +9620,41 @@ button.match-btn-disabled:disabled {
     letter-spacing: 0;
 }
 
-.certificate-info-grid {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 14px;
-    margin: 26px 0;
-    text-align: left;
-}
-
-.certificate-info-grid div {
-    border: 1px solid #E5E7EB;
-    border-radius: 8px;
-    background: #F9FAFB;
-    padding: 14px;
-}
-
-.certificate-info-grid span {
-    display: block;
-    color: #6B7280;
-    font-size: 0.8rem;
-    font-weight: 800;
-}
-
-.certificate-info-grid strong {
+.certificate-details {
+    max-width: 700px;
+    margin: 22px auto 28px;
+    padding: 16px 0;
+    border-top: 1px solid rgba(29, 158, 117, 0.28);
+    border-bottom: 1px solid rgba(29, 158, 117, 0.28);
     color: #162033;
+    font-size: clamp(1rem, 1.8vw, 1.18rem);
+    line-height: 1.8;
+    text-align: center;
+    page-break-inside: avoid;
+    break-inside: avoid;
+}
+
+.certificate-details div {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: 8px;
+    margin: 0;
+}
+
+.certificate-details dt,
+.certificate-details dd {
+    margin: 0;
+}
+
+.certificate-details dt {
+    color: #6B7280;
+    font-weight: 700;
+}
+
+.certificate-details dd {
+    color: #162033;
+    font-weight: 900;
 }
 
 .certificate-signature {
@@ -9873,8 +9901,8 @@ button.match-btn-disabled:disabled {
         grid-template-columns: 1fr;
     }
 
-    .certificate-info-grid {
-        grid-template-columns: 1fr;
+    .certificate-details div {
+        flex-wrap: wrap;
     }
 
     .certificate-header,
@@ -10707,7 +10735,8 @@ body,
 
 @media (prefers-reduced-motion: reduce) {
     .landing-hero,
-    .landing-hero .soft-glow {
+    .landing-hero .soft-glow,
+    .hero-floating-card {
         animation: none !important;
     }
 
@@ -11150,18 +11179,84 @@ body,
 }
 
 @media print {
+    @page {
+        size: A4 landscape;
+        margin: 10mm;
+    }
+
     .dashboard-sidebar,
     .dashboard-topbar,
     .certificate-actions {
         display: none !important;
     }
 
+    .dashboard-shell-page,
     .dashboard-main {
+        background: #FFFFFF !important;
         margin: 0 !important;
         padding: 0 !important;
     }
 
+    .certificate-detail-page {
+        padding: 0 !important;
+        page-break-inside: avoid;
+        break-inside: avoid;
+    }
+
+    .certificate-detail-page::before,
+    .certificate-detail-page::after {
+        display: none !important;
+    }
+
     .certificate-document {
-        box-shadow: none;
+        max-width: none;
+        min-height: auto;
+        box-shadow: none !important;
+        page-break-inside: avoid;
+        break-inside: avoid;
+        padding: 12px !important;
+    }
+
+    .certificate-frame {
+        padding: 22px 34px !important;
+        page-break-inside: avoid;
+        break-inside: avoid;
+    }
+
+    .certificate-main {
+        margin: 18px auto 6px;
+    }
+
+    .certificate-document h1 {
+        margin: 8px 0 14px;
+        font-size: 2.7rem;
+    }
+
+    .certificate-document h2 {
+        margin-top: 6px;
+        font-size: 2rem;
+    }
+
+    .certificate-role-text {
+        margin-bottom: 16px;
+        font-size: 1rem;
+        line-height: 1.55;
+    }
+
+    .certificate-details {
+        margin: 14px auto 20px;
+        padding: 10px 0;
+        font-size: 0.98rem;
+        line-height: 1.55;
+    }
+
+    .certificate-seal {
+        width: 66px;
+        height: 66px;
+    }
+
+    .certificate-seal-large {
+        width: 76px;
+        height: 76px;
     }
 }
