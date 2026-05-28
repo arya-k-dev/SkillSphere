@@ -37,7 +37,7 @@ The active apps are declared in `skillsphere/settings.py`:
 | `skills` | `skills` | Skill CRUD and public skill browsing |
 | `matching` | `matching` | Match recommendations, requests, accepted exchanges |
 | `messaging` | `messaging` | Chat threads, chat messages, notifications |
-| `engagement` | `engagement.apps.EngagementConfig` | Achievements, certificates, leaderboard, community |
+| `engagement` | `engagement.apps.EngagementConfig` | Certificates, leaderboard, community |
 | `sessions` | `sessions.apps.SkillSessionsConfig` | Session scheduling, completion, ratings |
 | Django contrib apps | `admin`, `auth`, `contenttypes`, `sessions`, `messages`, `staticfiles` | Framework services |
 
@@ -75,7 +75,7 @@ Root URL configuration is in `skillsphere/urls.py`.
 | `/matching/` | `matching.urls` | Matching and exchange request pages |
 | `/messages/` | `messaging.urls` | Inbox and chat |
 | `/sessions/` | `sessions.urls` | Session management |
-| `/` | `engagement.urls` | Achievements, certificates, leaderboard, community |
+| `/` | `engagement.urls` | Certificates, leaderboard, community |
 | `/ratings/` | `sessions.views.ratings_page` | Ratings page |
 | `/notifications/` | `messaging.views.notification_list` | Notifications |
 | `/requests/` | `matching.views.*` aliases | Request list and request actions |
@@ -160,7 +160,6 @@ The project also defines alias routes under `/requests/` and `/matching/requests
 
 | Route | View | Notes |
 | --- | --- | --- |
-| `/achievements/` | `achievements_page` | Achievement progress and unlocked badges |
 | `/certificates/` | `certificates_page` | User certificates |
 | `/certificates/<certificate_id>/` | `certificate_detail` | Certificate detail |
 | `/leaderboard/` | `leaderboard_page` | Ranked community users |
@@ -332,25 +331,6 @@ Important behavior:
 - Only session participants can submit feedback.
 - One feedback record per user per session.
 
-### `engagement.Achievement`
-
-Defines achievements available in the platform.
-
-Default achievements include:
-
-- First Skill Added
-- First Exchange Accepted
-- First Session Completed
-- Helpful Mentor
-- Active Learner
-- Skill Sharer
-- Top Rated
-- Community Star
-
-### `engagement.UserAchievement`
-
-Tracks which achievements a user has unlocked, including progress and target values.
-
 ### `engagement.Certificate`
 
 Represents learner completion or mentor contribution certificates.
@@ -428,7 +408,7 @@ Scores are capped at 100 and labeled as:
 9. Users schedule sessions for the exchange.
 10. Completed sessions collect hours, notes, resources, and assignments.
 11. Participants submit feedback.
-12. Achievements and certificates are evaluated from completed work.
+12. Certificates are evaluated from completed work.
 
 ### Messaging Flow
 
@@ -437,13 +417,6 @@ Scores are capped at 100 and labeled as:
 3. Users open `/messages/` or the exchange chat route.
 4. Sending a message creates a `Message`.
 5. The recipient receives a `Notification`.
-
-### Achievement Flow
-
-1. Engagement pages call service functions such as `achievement_progress_for_user()`.
-2. Default achievements are ensured.
-3. Metrics are calculated from skills, exchanges, sessions, feedback, and hours.
-4. Completed targets create or update `UserAchievement` records.
 
 ### Certificate Flow
 
@@ -471,7 +444,7 @@ Scores are capped at 100 and labeled as:
 | `matching` | recommended matches, match card, match detail, match requests, my exchanges |
 | `messaging` | inbox, chat, notifications |
 | `sessions` | sessions list, session card, schedule, detail, complete, feedback form/display, ratings |
-| `engagement` | achievements, certificates, certificate detail, leaderboard, community |
+| `engagement` | certificates, certificate detail, leaderboard, community |
 
 ## 10. Static Assets
 
@@ -517,8 +490,6 @@ The project uses Django admin at `/admin/`. Admin classes are present for the ke
 - `NotificationAdmin`
 - `SessionAdmin`
 - `SessionFeedbackAdmin`
-- `AchievementAdmin`
-- `UserAchievementAdmin`
 - `CertificateAdmin`
 
 ## 13. Context Processors
@@ -558,6 +529,6 @@ These support notification badges, unread counts, and dashboard/topbar notificat
 - Use PostgreSQL or another production database.
 - Configure static file hosting.
 - Add media storage if profile images or uploads are introduced.
-- Add automated tests for matching, request lifecycle, sessions, achievements, and certificates.
+- Add automated tests for matching, request lifecycle, sessions, and certificates.
 - Add CI checks for migrations and Django system checks.
 - Add a formal license file.

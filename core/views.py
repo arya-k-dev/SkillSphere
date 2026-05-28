@@ -11,8 +11,6 @@ from matching.utils import get_recommended_matches
 from messaging.models import ChatThread
 from sessions.models import Session, SessionFeedback
 from skills.models import Skill
-from engagement.models import UserAchievement
-from engagement.services import evaluate_user_achievements
 
 from .public_skills import PUBLIC_SKILLS, PUBLIC_SKILLS_BY_SLUG
 
@@ -275,8 +273,6 @@ def dashboard(request):
         },
     ]
     average_rating = session_average_rating or min(5, 4 + (accepted_exchanges.count() * 0.1))
-    achievement_progress = evaluate_user_achievements(request.user)
-    latest_achievements = UserAchievement.objects.select_related("achievement").filter(user=request.user)[:3]
     context = {
         "teach_count": user_skills.filter(skill_type=Skill.TEACH).count(),
         "learn_count": user_skills.filter(skill_type=Skill.LEARN).count(),
@@ -299,8 +295,6 @@ def dashboard(request):
         "top_experts": top_experts,
         "xp_balance": xp_balance,
         "average_rating": average_rating,
-        "latest_achievements": latest_achievements,
-        "achievements_unlocked_count": len([item for item in achievement_progress if item.unlocked]),
         "dashboard_charts": {
             "weekly": {
                 "labels": weekly_labels,

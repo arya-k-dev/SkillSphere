@@ -222,10 +222,8 @@ def mark_session_complete(request, session_id):
         completed_session.hours_taught = duration_hours if completed_session.mentor_attendance else Decimal("0.00")
         completed_session.hours_learned = duration_hours if completed_session.learner_attendance else Decimal("0.00")
         completed_session.save()
-        from engagement.services import ensure_certificates_for_user, evaluate_user_achievements
+        from engagement.services import ensure_certificates_for_user
 
-        evaluate_user_achievements(completed_session.mentor)
-        evaluate_user_achievements(completed_session.learner)
         ensure_certificates_for_user(completed_session.mentor)
         ensure_certificates_for_user(completed_session.learner)
         messages.success(request, "Session marked complete.")
@@ -257,10 +255,8 @@ def submit_session_feedback(request, session_id):
         except (ValidationError, IntegrityError) as error:
             form.add_error(None, error)
         else:
-            from engagement.services import ensure_certificates_for_user, evaluate_user_achievements
+            from engagement.services import ensure_certificates_for_user
 
-            evaluate_user_achievements(session.mentor)
-            evaluate_user_achievements(session.learner)
             ensure_certificates_for_user(session.mentor)
             ensure_certificates_for_user(session.learner)
             messages.success(request, "Feedback submitted.")

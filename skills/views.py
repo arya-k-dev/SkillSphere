@@ -93,9 +93,6 @@ def skill_add(request):
             skill = form.save(commit=False)
             skill.user = request.user
             skill.save()
-            from engagement.services import evaluate_user_achievements
-
-            evaluate_user_achievements(request.user)
             messages.success(request, "Your skill has been added.")
             return redirect("skills:my_skills")
     else:

@@ -7,18 +7,17 @@
 
 {% block dashboard_content %}
 <section class="engagement-page certificate-detail-page">
-    <article class="certificate-document glass-card gradient-border-card reveal">
+    <article class="certificate-document reveal">
         <div class="certificate-watermark" aria-hidden="true">S</div>
         <div class="certificate-frame">
+            <span class="certificate-corner certificate-corner-top" aria-hidden="true"></span>
+            <span class="certificate-corner certificate-corner-bottom" aria-hidden="true"></span>
             <header class="certificate-header">
                 <div class="certificate-brand">
                     <img class="brand-mark" src="{% static 'images/skillsphere-exchange-logo-v2.svg' %}" alt="" aria-hidden="true">
                     <span class="logo-text"><span class="logo-skill">Skill</span><span class="logo-sphere">Sphere</span></span>
                 </div>
-                <div class="certificate-seal" aria-label="Verified certificate">
-                    <i class="fa-solid fa-check" aria-hidden="true"></i>
-                    <span>Verified</span>
-                </div>
+                <span class="certificate-id">Certificate ID: {{ certificate.certificate_id }}</span>
             </header>
 
             <div class="certificate-main">
@@ -29,37 +28,56 @@
                         Skill Completion Certificate
                     {% endif %}
                 </p>
-                <h2>{{ certificate.title }}</h2>
+                <h2>Certificate</h2>
                 <p class="certificate-kicker">This certificate is proudly issued to</p>
                 <h1>{{ certificate_display.issued_to_name }}</h1>
-                <p class="certificate-role-text">{{ certificate_display.certificate_text }}</p>
+                <p class="certificate-role-text">
+                    {% if certificate.certificate_type == "mentor_contribution" %}
+                        SkillSphere proudly recognizes <strong>{{ certificate_display.mentor_name }}</strong>
+                        for successfully mentoring <strong>{{ certificate_display.learner_name }}</strong>
+                        in <strong>{{ certificate_display.skill_name }}</strong> through the SkillSphere skill exchange platform.
+                        The exchange included <strong>{{ certificate.hours_completed|floatformat:1 }} hours</strong>
+                        across <strong>{{ certificate.sessions_count|default:1 }} session(s)</strong>, and the learner rated the experience
+                        <strong>{% if certificate.rating %}{{ certificate.rating|floatformat:1 }} / 5{% else %}Not rated{% endif %}</strong>.
+                        This certificate was issued on <strong>{{ certificate.issued_date|date:"M d, Y" }}</strong>
+                        and may be verified with code <strong>{{ certificate.verification_code }}</strong>.
+                    {% else %}
+                        SkillSphere proudly certifies that <strong>{{ certificate_display.learner_name }}</strong>
+                        successfully completed learning <strong>{{ certificate_display.skill_name }}</strong>
+                        under the mentorship of <strong>{{ certificate_display.mentor_name }}</strong>
+                        through the SkillSphere skill exchange platform.
+                        The learner completed <strong>{{ certificate.hours_completed|floatformat:1 }} hours</strong>
+                        across <strong>{{ certificate.sessions_count|default:1 }} session(s)</strong>
+                        and earned a rating of
+                        <strong>{% if certificate.rating %}{{ certificate.rating|floatformat:1 }} / 5{% else %}Not rated{% endif %}</strong>.
+                        This certificate was issued on <strong>{{ certificate.issued_date|date:"M d, Y" }}</strong>
+                        and may be verified with code <strong>{{ certificate.verification_code }}</strong>.
+                    {% endif %}
+                </p>
             </div>
 
-            <dl class="certificate-details">
-                <div><dt>Skill:</dt><dd>{{ certificate_display.skill_name }}</dd></div>
-                <div><dt>Learner:</dt><dd>{{ certificate_display.learner_name }}</dd></div>
-                <div><dt>Mentor:</dt><dd>{{ certificate_display.mentor_name }}</dd></div>
-                <div><dt>Role:</dt><dd>{{ certificate.get_certificate_type_display }}</dd></div>
-                <div><dt>{% if certificate.certificate_type == "mentor_contribution" %}Hours Taught:{% else %}Hours Completed:{% endif %}</dt><dd>{{ certificate.hours_completed|floatformat:1 }} Hours</dd></div>
-                <div><dt>{% if certificate.certificate_type == "mentor_contribution" %}Sessions Conducted:{% else %}Sessions Completed:{% endif %}</dt><dd>{{ certificate.sessions_count|default:1 }}</dd></div>
-                <div><dt>Performance Rating:</dt><dd>{% if certificate.rating %}{{ certificate.rating|floatformat:1 }} / 5{% else %}Not rated{% endif %}</dd></div>
-                <div><dt>Issue Date:</dt><dd>{{ certificate.issued_date|date:"M d, Y" }}</dd></div>
-                <div><dt>Verification ID:</dt><dd>{{ certificate.verification_code }}</dd></div>
-            </dl>
+            <p class="certificate-details-line">
+                {{ certificate.get_certificate_type_display }} |
+                {% if certificate.rating %}{{ certificate.rating|floatformat:1 }} / 5{% else %}Not rated{% endif %} |
+                {{ certificate.sessions_count|default:1 }} Sessions |
+                {{ certificate.issued_date|date:"M d, Y" }} |
+                {{ certificate.verification_code }}
+            </p>
 
             <footer class="certificate-footer">
                 <div class="certificate-signature">
                     <span></span>
-                    <strong>SkillSphere</strong>
-                    <small>Verified Achievement Authority</small>
+                    <strong>{{ certificate_display.mentor_name }}</strong>
+                    <small>Mentor</small>
                 </div>
-                <div class="certificate-verification">
-                    <span>Certificate ID: {{ certificate.certificate_id }}</span>
-                    <span>Verification Code: {{ certificate.verification_code }}</span>
-                </div>
-                <div class="certificate-seal certificate-seal-large" aria-hidden="true">
+                <div class="certificate-seal certificate-seal-large" aria-label="SkillSphere verified seal">
                     <i class="fa-solid fa-check" aria-hidden="true"></i>
-                    <span>Verified</span>
+                    <span>SkillSphere</span>
+                </div>
+                <div class="certificate-signature certificate-signature-right">
+                    <span></span>
+                    <strong>SkillSphere Verification</strong>
+                    <small>Verified Certificate Authority</small>
                 </div>
             </footer>
         </div>

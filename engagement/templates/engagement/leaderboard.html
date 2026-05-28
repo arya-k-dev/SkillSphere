@@ -2,7 +2,7 @@
 
 {% block title %}Leaderboard | SkillSphere{% endblock %}
 {% block dashboard_heading %}Leaderboard{% endblock %}
-{% block dashboard_subtitle %}<p class="topbar-subtitle">See top SkillSphere contributors ranked by sessions, ratings, badges, and points.</p>{% endblock %}
+{% block dashboard_subtitle %}<p class="topbar-subtitle">See top SkillSphere contributors ranked by sessions, ratings, and points.</p>{% endblock %}
 
 {% block dashboard_content %}
 <section class="engagement-page">
@@ -21,7 +21,7 @@
 
     <div class="engagement-card leaderboard-table-card">
         <div class="leaderboard-row leaderboard-head">
-            <span>Rank</span><span>User</span><span>Skills Taught</span><span>Sessions</span><span>Hours</span><span>Rating</span><span>Badges</span><span>Points</span>
+            <span>Rank</span><span>User</span><span>Skills Taught</span><span>Sessions</span><span>Hours</span><span>Rating</span><span>Points</span>
         </div>
         {% for row in rows %}
             <a class="leaderboard-row" href="{% url 'matching:detail' row.user.pk %}">
@@ -31,7 +31,6 @@
                 <span>{{ row.completed_sessions }}</span>
                 <span>{{ row.hours_taught|floatformat:1 }}</span>
                 <span>{{ row.average_rating|floatformat:1 }}</span>
-                <span>{{ row.badges_count }}</span>
                 <b>{{ row.points }}</b>
             </a>
         {% empty %}

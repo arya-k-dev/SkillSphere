@@ -1,19 +1,6 @@
 from django.contrib import admin
 
-from .models import Achievement, Certificate, UserAchievement
-
-
-@admin.register(Achievement)
-class AchievementAdmin(admin.ModelAdmin):
-    list_display = ("name", "code", "points", "target_value", "icon_label")
-    search_fields = ("name", "code", "description")
-
-
-@admin.register(UserAchievement)
-class UserAchievementAdmin(admin.ModelAdmin):
-    list_display = ("user", "achievement", "unlocked_at", "progress_value", "target_value")
-    list_filter = ("achievement", "unlocked_at")
-    search_fields = ("user__username", "achievement__name")
+from .models import Certificate
 
 
 @admin.register(Certificate)

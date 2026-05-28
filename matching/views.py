@@ -245,10 +245,6 @@ def accept_match_request(request, request_id):
     except ValidationError as error:
         messages.error(request, error.messages[0] if hasattr(error, "messages") else str(error))
     else:
-        from engagement.services import evaluate_user_achievements
-
-        evaluate_user_achievements(match_request.sender)
-        evaluate_user_achievements(match_request.receiver)
         messages.success(request, "Request accepted.")
     return redirect("matching:requests")
 

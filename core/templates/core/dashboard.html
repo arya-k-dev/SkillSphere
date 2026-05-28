@@ -235,7 +235,7 @@
             {% else %}
                 <div class="analytics-empty">
                     <strong>No activity yet</strong>
-                    <p>Your exchanges, badges, and skill updates will collect here.</p>
+                    <p>Your exchanges, sessions, and skill updates will collect here.</p>
                 </div>
             {% endif %}
         </article>
@@ -264,53 +264,6 @@
                 </div>
             {% endif %}
         </article>
-    </section>
-
-    <section class="analytics-card app-card gradient-border-card achievements-compact-card">
-        <div class="analytics-card-heading">
-            <div>
-                <p class="section-label">Milestones</p>
-                <h2>Achievements Preview</h2>
-            </div>
-            <a href="{% url 'engagement:achievements' %}">View all achievements</a>
-        </div>
-        {% if latest_achievements %}
-            <div class="analytics-achievement-grid">
-                {% for unlock in latest_achievements %}
-                    <div class="achievement-badge unlocked">
-                        <span class="achievement-icon" aria-hidden="true">
-                            {% if unlock.achievement.code == "helpful_mentor" %}
-                                <i class="fa-solid fa-user-graduate"></i>
-                            {% elif unlock.achievement.code == "skill_sharer" %}
-                                <i class="fa-solid fa-layer-group"></i>
-                            {% elif unlock.achievement.code == "top_rated" %}
-                                <i class="fa-solid fa-trophy"></i>
-                            {% elif unlock.achievement.name == "Session Expert" %}
-                                <i class="fa-solid fa-trophy"></i>
-                            {% elif unlock.achievement.code == "first_session_completed" %}
-                                <i class="fa-solid fa-award"></i>
-                            {% elif unlock.achievement.name == "Quick Learner" or unlock.achievement.code == "active_learner" %}
-                                <i class="fa-solid fa-bolt"></i>
-                            {% elif unlock.achievement.code == "community_star" %}
-                                <i class="fa-solid fa-star"></i>
-                            {% elif unlock.achievement.code == "first_skill_added" %}
-                                <i class="fa-solid fa-book-open"></i>
-                            {% elif unlock.achievement.code == "first_exchange_accepted" %}
-                                <i class="fa-solid fa-handshake"></i>
-                            {% else %}
-                                <i class="fa-solid fa-medal"></i>
-                            {% endif %}
-                        </span>
-                        <strong>{{ unlock.achievement.name }}</strong>
-                    </div>
-                {% endfor %}
-            </div>
-        {% else %}
-            <div class="analytics-empty">
-                <strong>No achievements unlocked yet</strong>
-                <p>Start by adding a skill or completing your first session.</p>
-            </div>
-        {% endif %}
     </section>
 </div>
 

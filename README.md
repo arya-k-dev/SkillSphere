@@ -2,11 +2,11 @@
 
 SkillSphere is a peer-to-peer skill exchange platform built with Django. It helps people teach what they know, learn what they want, and grow through reciprocal learning instead of monetary transactions.
 
-The platform connects learners and mentors through skill profiles, intelligent match recommendations, exchange requests, scheduled sessions, feedback, achievements, certificates, messaging, and dashboard analytics.
+The platform connects learners and mentors through skill profiles, intelligent match recommendations, exchange requests, scheduled sessions, feedback, certificates, messaging, and dashboard analytics.
 
 ## Project Overview
 
-SkillSphere is designed around mutual learning. A user can list skills they can teach and skills they want to learn, then the system recommends compatible peers based on overlapping skill titles, categories, levels, location, and activity. Once a request is accepted, the platform creates an active exchange with chat, sessions, ratings, achievements, and certificate flows.
+SkillSphere is designed around mutual learning. A user can list skills they can teach and skills they want to learn, then the system recommends compatible peers based on overlapping skill titles, categories, levels, location, and activity. Once a request is accepted, the platform creates an active exchange with chat, sessions, ratings, and certificate flows.
 
 ## Key Features
 
@@ -21,7 +21,6 @@ SkillSphere is designed around mutual learning. A user can list skills they can 
 | Sessions | Schedule, edit, cancel, complete, and review learning sessions |
 | Ratings | Session feedback with 1-5 star ratings, comments, and tags |
 | Certificates | Automatic certificate generation for completed exchanges with enough feedback |
-| Achievements | Badge-style achievement tracking, progress, unlocks, leaderboard, and community pages |
 | Dashboard | Modern dashboard with metrics, recommendations, activity, progress cards, upcoming sessions, and Chart.js analytics |
 | Notifications | Notification model, unread counts, notification page, mark-read, read-all, and clear-read flows |
 | Messaging | Inbox and exchange-based chat threads after accepted requests |
@@ -53,7 +52,7 @@ SKILLSPHERE2/
 ├── messaging/             # Chat threads, messages, notifications
 ├── notifications/         # Notification context processor package
 ├── sessions/              # Skill exchange sessions and feedback
-├── engagement/            # Achievements, certificates, leaderboard, community
+├── engagement/            # Certificates, leaderboard, community
 ├── skillsphere/           # Django project settings, URL config, ASGI/WSGI
 ├── templates/             # Shared base templates
 ├── static/                # Source CSS, JavaScript, images
@@ -79,7 +78,7 @@ Notes:
 | `matching` | Calculates recommended matches, manages match request lifecycle, prevents duplicate active requests, and creates skill exchanges. |
 | `messaging` | Creates chat threads for accepted exchanges, stores messages, and manages notifications. |
 | `sessions` | Schedules and tracks exchange sessions, completion details, attendance, hours, resources, assignments, and feedback. |
-| `engagement` | Tracks achievements, user badge progress, certificates, leaderboard scoring, and community metrics. |
+| `engagement` | Tracks certificates, leaderboard scoring, and community metrics. |
 | `notifications` | Supplies notification context data to templates. |
 
 ## UI / Design System
@@ -111,11 +110,9 @@ Primary UI files:
 | `SkillExchange` | `matching` | Represents an accepted skill exchange between two users. |
 | `ChatThread` | `messaging` | One chat thread per accepted skill exchange. |
 | `Message` | `messaging` | Individual chat messages with sender, body, read state, and timestamp. |
-| `Notification` | `messaging` | User notifications for requests, messages, sessions, ratings, badges, and certificates. |
+| `Notification` | `messaging` | User notifications for requests, messages, sessions, ratings, and certificates. |
 | `Session` | `sessions` | Scheduled learning session with mentor, learner, date/time, format, status, completion notes, attendance, and hours. |
 | `SessionFeedback` | `sessions` | Participant feedback for a session, including rating, comments, and tags. |
-| `Achievement` | `engagement` | Badge definition with code, name, description, points, target value, and icon label. |
-| `UserAchievement` | `engagement` | Tracks unlocked achievements and progress for a user. |
 | `Certificate` | `engagement` | Certificate records for learner completion or mentor contribution. |
 
 ## Main Routes
@@ -144,7 +141,6 @@ Primary UI files:
 | `/sessions/` | `sessions` | Sessions list |
 | `/sessions/schedule/<exchange_id>/` | `sessions` | Schedule session |
 | `/ratings/` | `sessions` | Ratings page |
-| `/achievements/` | `engagement` | Achievements |
 | `/certificates/` | `engagement` | Certificates |
 | `/leaderboard/` | `engagement` | Leaderboard |
 | `/community/` | `engagement` | Community page |
@@ -238,7 +234,7 @@ For production, move sensitive values into environment variables:
 
 | Command | Purpose |
 | --- | --- |
-| `python manage.py seed_demo_data` | Seeds demo users, skills, exchanges, sessions, achievements, and certificates. |
+| `python manage.py seed_demo_data` | Seeds demo users, skills, exchanges, sessions, and certificates. |
 | `python manage.py send_session_reminders` | Sends session reminder notifications for upcoming sessions. |
 | `python manage.py dedupe_match_requests` | Cleans duplicate match requests. |
 
@@ -253,7 +249,6 @@ Add screenshots to a future `docs/screenshots/` folder or embed them here.
 | Matches | `docs/screenshots/matches.png` |
 | Skills | `docs/screenshots/skills.png` |
 | Certificates | `docs/screenshots/certificates.png` |
-| Achievements | `docs/screenshots/achievements.png` |
 
 ## Future Enhancements
 

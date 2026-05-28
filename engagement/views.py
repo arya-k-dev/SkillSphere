@@ -1,111 +1,17 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
-from django.db.models import Avg, Count, Q, Sum
+from django.db.models import Avg, Count
 from django.shortcuts import get_object_or_404, render
 
-from matching.models import SkillExchange
 from sessions.models import Session, SessionFeedback
 from skills.models import Skill
 
-from .models import Achievement, Certificate
+from .models import Certificate
 from .services import (
-    completed_exchange_count,
     display_name,
     ensure_certificates_for_user,
-    evaluate_user_achievements,
     user_leaderboard_rows,
 )
-
-
-ACHIEVEMENT_CATEGORY_LABELS = {
-    Achievement.HELPFUL_MENTOR: "Teacher Badges",
-    Achievement.SKILL_SHARER: "Teacher Badges",
-    Achievement.TOP_RATED: "Teacher Badges",
-    Achievement.FIRST_SKILL: "Learner Badges",
-    Achievement.FIRST_SESSION: "Learner Badges",
-    Achievement.ACTIVE_LEARNER: "Learner Badges",
-    Achievement.FIRST_EXCHANGE: "Community Badges",
-    Achievement.COMMUNITY_STAR: "Community Badges",
-}
-
-
-ACHIEVEMENT_PROGRESS_UNITS = {
-    Achievement.FIRST_SKILL: "skills added",
-    Achievement.FIRST_EXCHANGE: "exchanges accepted",
-    Achievement.FIRST_SESSION: "sessions completed",
-    Achievement.HELPFUL_MENTOR: "five-star reviews",
-    Achievement.ACTIVE_LEARNER: "sessions completed",
-    Achievement.SKILL_SHARER: "hours taught",
-    Achievement.TOP_RATED: "reviews received",
-    Achievement.COMMUNITY_STAR: "exchanges completed",
-}
-
-
-def compact_metric(value):
-    if value is None:
-        return "0"
-    if value == int(value):
-        return str(int(value))
-    return str(value).rstrip("0").rstrip(".")
-
-
-def grouped_achievement_progress(progress_items):
-    grouped = {
-        "Teacher Badges": [],
-        "Learner Badges": [],
-        "Community Badges": [],
-    }
-    for item in progress_items:
-        category = ACHIEVEMENT_CATEGORY_LABELS.get(item.achievement.code, "Community Badges")
-        unit = ACHIEVEMENT_PROGRESS_UNITS.get(item.achievement.code, "completed")
-        item.progress_text = (
-            f"{compact_metric(item.progress_value)}/{compact_metric(item.target_value)} {unit}"
-        )
-        grouped[category].append(item)
-    return [{"title": title, "items": items} for title, items in grouped.items() if items]
-
-
-def achievement_summary_for_user(user, unlocked_count):
-    completed_sessions = Session.objects.filter(
-        Q(mentor=user) | Q(learner=user),
-        status=Session.COMPLETED,
-    )
-    hours_taught = completed_sessions.filter(mentor=user).aggregate(total=Sum("hours_taught"))["total"] or 0
-    hours_learned = completed_sessions.filter(learner=user).aggregate(total=Sum("hours_learned"))["total"] or 0
-    average_rating = (
-        SessionFeedback.objects.filter(Q(session__mentor=user) | Q(session__learner=user))
-        .exclude(given_by=user)
-        .aggregate(avg=Avg("rating"))["avg"]
-        or 0
-    )
-    return {
-        "certificates_earned": Certificate.objects.filter(
-            user=user,
-            certificate_type__in=[Certificate.LEARNER, Certificate.MENTOR],
-        ).count(),
-        "badges_collected": unlocked_count,
-        "hours_taught": hours_taught,
-        "hours_learned": hours_learned,
-        "average_rating": average_rating,
-    }
-
-
-@login_required
-def achievements_page(request):
-    progress_items = evaluate_user_achievements(request.user)
-    unlocked = [item for item in progress_items if item.unlocked]
-    locked = [item for item in progress_items if not item.unlocked]
-    return render(
-        request,
-        "engagement/achievements.html",
-        {
-            "progress_items": progress_items,
-            "unlocked": unlocked,
-            "locked": locked,
-            "badge_sections": grouped_achievement_progress(progress_items),
-            "achievement_stats": achievement_summary_for_user(request.user, len(unlocked)),
-        },
-    )
 
 
 @login_required
